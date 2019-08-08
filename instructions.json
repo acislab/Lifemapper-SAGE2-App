@@ -1,0 +1,23 @@
+{
+	"main_script": "lifemapper.js",
+	"icon": "lifemapper.png",
+	"width": 1280,
+	"height": 720,
+	"resize": "free",
+	"animation": false,
+	"dependencies": [
+		"WebviewAppCore.js"
+	],
+	"load": {
+		"url": "/uploads/web/index.html",
+		"favicon": "",
+		"zoom": 1.2,
+		"mode": "desktop"
+	},
+	"title": "lifemapper",
+	"version": "0.1",
+	"description": "Lifemapper App",
+	"keywords": [ "lifemapper" ],
+	"author": "Michael Elliott <mielliott@ufl.edu>",
+	"license": "SAGE2-Software-License"
+}
