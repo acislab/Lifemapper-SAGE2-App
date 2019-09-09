@@ -1,0 +1,16 @@
+/elm-stuff/
+/tests/elm-stuff/
+/source/Decoder.elm
+/boom.tar.gz
+/boom/elm/*.js
+/boom/boomFlagsOverride.js
+/boom/elm/boomMain.js
+/boom/elm/subsetpam.js
+/mcpa.tar.gz
+/mcpa/elm/*.js
+/mcpa/elm/StatsHeatMap.js
+/mcpa/elm/StatsTreeMap.js
+/*/VERSION
+*.DS_Store
+.project
+

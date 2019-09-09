@@ -1,0 +1,4405 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Lifemapper API",
+    "description": "Lifemapper services",
+    "version": "2.0.0"
+  },
+  "host": "svc.lifemapper.org",
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "basePath": "/api/v2",
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/envlayer": {
+      "get": {
+        "summary": "Lifemapper environmental layers listing service",
+        "description": "The layers endpoint provides a service for querying Lifemapper \nenvironmental layers that match a set of query parameters.\n",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Offset"
+          },
+          {
+            "$ref": "#/parameters/Limit"
+          },
+          {
+            "$ref": "#/parameters/UrlUser"
+          },
+          {
+            "$ref": "#/parameters/EnvCode"
+          },
+          {
+            "$ref": "#/parameters/GCM"
+          },
+          {
+            "$ref": "#/parameters/AltPredCode"
+          },
+          {
+            "$ref": "#/parameters/DateCode"
+          },
+          {
+            "$ref": "#/parameters/AfterTime"
+          },
+          {
+            "$ref": "#/parameters/BeforeTime"
+          },
+          {
+            "$ref": "#/parameters/EPSG"
+          },
+          {
+            "$ref": "#/parameters/ScenarioCode"
+          },
+          {
+            "$ref": "#/parameters/ScenarioId"
+          }
+        ],
+        "tags": [
+          "Environmental Layer"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of environmental layers that match the specified criteria",
+            "schema": {
+              "$ref": "#/definitions/AtomList"
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Post a new environmental layer",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "epsgCode",
+            "in": "query",
+            "description": "The EPSG code for the layer",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "A short name for the layer",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "isCategorical",
+            "in": "query",
+            "description": "An indicator if this layer is categorical or not (1=yes, 0=no)",
+            "required": false,
+            "type": "integer",
+            "format": "int2",
+            "minimum": 0,
+            "maximum": 1,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "envLayerTypeId",
+            "in": "query",
+            "description": "The type code id for this layer",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "metadata",
+            "in": "query",
+            "description": "Additional metadata to add to the layer",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "envLayerType",
+            "in": "query",
+            "description": "The type code for this layer",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "valUnits",
+            "in": "query",
+            "description": "The units for the values in each cell (such as degreesCelsius)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "gcmCode",
+            "in": "query",
+            "description": "GCM",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "alternatePredictionCode",
+            "in": "query",
+            "description": "Alternate prediction code",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "dateCode",
+            "in": "query",
+            "description": "Date code",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "file",
+            "in": "formData",
+            "description": "The layer content as a file",
+            "required": true,
+            "type": "file"
+          }
+        ],
+        "tags": [
+          "Environmental Layer"
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful layer post",
+            "schema": {
+              "$ref": "#/definitions/Layer"
+            }
+          },
+          "400": {
+            "description": "Error status returned when there is a problem with the user inputs"
+          }
+        }
+      }
+    },
+    "/envlayer/count": {
+      "get": {
+        "summary": "Lifemapper environmental layers count services",
+        "description": "The environmental layers count service endpoint provides a service for\nreturning the number of environmental layers that match a set of query\nparameters.\n",
+        "parameters": [
+          {
+            "$ref": "#/parameters/UrlUser"
+          },
+          {
+            "$ref": "#/parameters/EnvCode"
+          },
+          {
+            "$ref": "#/parameters/GCM"
+          },
+          {
+            "$ref": "#/parameters/AltPredCode"
+          },
+          {
+            "$ref": "#/parameters/DateCode"
+          },
+          {
+            "$ref": "#/parameters/AfterTime"
+          },
+          {
+            "$ref": "#/parameters/BeforeTime"
+          },
+          {
+            "$ref": "#/parameters/EPSG"
+          },
+          {
+            "$ref": "#/parameters/ScenarioCode"
+          },
+          {
+            "$ref": "#/parameters/ScenarioId"
+          }
+        ],
+        "tags": [
+          "Environmental Layer"
+        ],
+        "responses": {
+          "200": {
+            "description": "A count of environmental layers matching the criteria",
+            "schema": {
+              "$ref": "#/definitions/ObjectCount"
+            }
+          }
+        }
+      }
+    },
+    "/envlayer/{layerId}": {
+      "get": {
+        "summary": "Get an environmental layer",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PathLayerId"
+          }
+        ],
+        "tags": [
+          "Environmental Layer"
+        ],
+        "produces": [
+          "application/json",
+          "image/tiff",
+          "application/vnd.google-earth.kml+xml",
+          "application/vnd.google-earth.kmz"
+        ],
+        "responses": {
+          "200": {
+            "description": "Layer object in specified format",
+            "schema": {
+              "$ref": "#/definitions/EnvLayer"
+            }
+          },
+          "403": {
+            "description": "Error status thrown when the user does not have permission to access an environmental layer"
+          },
+          "404": {
+            "description": "Error status thrown when the requested environmental layer was not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a layer that you own",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PathLayerId"
+          }
+        ],
+        "tags": [
+          "Environmental Layer"
+        ],
+        "responses": {
+          "204": {
+            "description": "Returns an OK response that a layer is deleted"
+          },
+          "403": {
+            "description": "Error status thrown when the user does not have permission to delete an environmental layer"
+          },
+          "404": {
+            "description": "Error status thrown when the requested environmental layer was not found"
+          }
+        }
+      }
+    },
+    "/gbifparser": {
+      "post": {
+        "summary": "Use GBIF services to find accepted names for provided names",
+        "tags": [
+          "Gbif"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "A list of names to search for",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GbifPost"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "A mapping of provided names to GBIF accepted names",
+            "schema": {
+              "$ref": "#/definitions/GbifResponse"
+            }
+          }
+        }
+      }
+    },
+    "/biotaphypoints": {
+      "post": {
+        "summary": "Return the number of points obtained for each of the provided taxon ids",
+        "tags": [
+          "BiotaPhy"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "A list of taxon ids to search for",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BiotaphyPointsPost"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "The number of points",
+            "schema": {
+              "$ref": "#/definitions/BiotaphyPointsResponse"
+            }
+          }
+        }
+      }
+    },
+    "/globalpam": {
+      "get": {
+        "summary": "Lifemapper global PAM query service",
+        "description": "The Global PAM endpoint allows a user to query all of the completed \nPAMs that the user has access to to find those that match their query\nparameters.\n",
+        "parameters": [
+          {
+            "$ref": "#/parameters/AlgorithmCode"
+          },
+          {
+            "$ref": "#/parameters/BBox"
+          },
+          {
+            "$ref": "#/parameters/GridsetId"
+          },
+          {
+            "$ref": "#/parameters/ModelScenarioCode"
+          },
+          {
+            "$ref": "#/parameters/PointMax"
+          },
+          {
+            "$ref": "#/parameters/PointMin"
+          },
+          {
+            "$ref": "#/parameters/UrlUser"
+          },
+          {
+            "$ref": "#/parameters/ProjectScenarioCode"
+          },
+          {
+            "$ref": "#/parameters/Squid"
+          },
+          {
+            "$ref": "#/parameters/TaxonKingdom"
+          },
+          {
+            "$ref": "#/parameters/TaxonPhylum"
+          },
+          {
+            "$ref": "#/parameters/TaxonClass"
+          },
+          {
+            "$ref": "#/parameters/TaxonOrder"
+          },
+          {
+            "$ref": "#/parameters/TaxonFamily"
+          },
+          {
+            "$ref": "#/parameters/TaxonGenus"
+          },
+          {
+            "$ref": "#/parameters/TaxonSpecies"
+          }
+        ],
+        "tags": [
+          "Global PAM"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a list of matching PAVs",
+            "schema": {
+              "$ref": "#/definitions/SolrList"
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Lifemapper Global PAM subset service",
+        "description": "The Global PAM subset service allows a user to create a subset of an\nexisting Global PAM for computations\n",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ArchiveNameReq"
+          },
+          {
+            "$ref": "#/parameters/GridsetIdReq"
+          },
+          {
+            "$ref": "#/parameters/AlgorithmCode"
+          },
+          {
+            "$ref": "#/parameters/BBox"
+          },
+          {
+            "$ref": "#/parameters/CellSize"
+          },
+          {
+            "$ref": "#/parameters/ModelScenarioCode"
+          },
+          {
+            "$ref": "#/parameters/PointMax"
+          },
+          {
+            "$ref": "#/parameters/PointMin"
+          },
+          {
+            "$ref": "#/parameters/UrlUser"
+          },
+          {
+            "$ref": "#/parameters/ProjectScenarioCode"
+          },
+          {
+            "$ref": "#/parameters/Squid"
+          },
+          {
+            "$ref": "#/parameters/TaxonKingdom"
+          },
+          {
+            "$ref": "#/parameters/TaxonPhylum"
+          },
+          {
+            "$ref": "#/parameters/TaxonClass"
+          },
+          {
+            "$ref": "#/parameters/TaxonOrder"
+          },
+          {
+            "$ref": "#/parameters/TaxonFamily"
+          },
+          {
+            "$ref": "#/parameters/TaxonGenus"
+          },
+          {
+            "$ref": "#/parameters/TaxonSpecies"
+          }
+        ],
+        "tags": [
+          "Global PAM"
+        ],
+        "responses": {
+          "202": {
+            "description": "An atom for the gridset that was just posted",
+            "schema": {
+              "$ref": "#/definitions/AtomObject"
+            }
+          }
+        }
+      }
+    },
+    "/globalpam/gridset": {
+      "get": {
+        "summary": "Service to find the available gridsets for the global pam",
+        "description": "The Global PAM gridset facet endpoint allows the user to find the \ngridsets available to them that are cataloged in Solr so that they can\ncreate subsets from them.\n",
+        "parameters": [
+          {
+            "$ref": "#/parameters/UrlUser"
+          }
+        ],
+        "tags": [
+          "Global PAM",
+          "Facet"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the available gridsets",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "gridSetId": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "gridSetId": {
+                        "type": "string"
+                      },
+                      "count": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/gridset": {
+      "get": {
+        "summary": "Lifemapper grid sets listing service",
+        "description": "The gridset endpoint provides a service for querying Lifemapper \ngridsets that match a set of query parameters\n",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Offset"
+          },
+          {
+            "$ref": "#/parameters/Limit"
+          },
+          {
+            "$ref": "#/parameters/UrlUser"
+          },
+          {
+            "$ref": "#/parameters/AfterTime"
+          },
+          {
+            "$ref": "#/parameters/BeforeTime"
+          },
+          {
+            "$ref": "#/parameters/EPSG"
+          },
+          {
+            "$ref": "#/parameters/MetaString"
+          },
+          {
+            "$ref": "#/parameters/ShapegridId"
+          }
+        ],
+        "tags": [
+          "Gridset"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a list of grid sets atoms",
+            "schema": {
+              "$ref": "#/definitions/AtomList"
+            }
+          }
+        }
+      }
+    },
+    "/gridset/count": {
+      "get": {
+        "summary": "Lifemapper grid sets counting service",
+        "description": "The grid sets endpoint provides a service counting how many Lifemapper \ngrid sets match a set of query parameters.\n",
+        "parameters": [
+          {
+            "$ref": "#/parameters/UrlUser"
+          },
+          {
+            "$ref": "#/parameters/AfterTime"
+          },
+          {
+            "$ref": "#/parameters/BeforeTime"
+          },
+          {
+            "$ref": "#/parameters/EPSG"
+          },
+          {
+            "$ref": "#/parameters/MetaString"
+          },
+          {
+            "$ref": "#/parameters/ShapegridId"
+          }
+        ],
+        "tags": [
+          "Gridset"
+        ],
+        "responses": {
+          "200": {
+            "description": "The number of grid sets that match the specified criteria",
+            "schema": {
+              "$ref": "#/definitions/ObjectCount"
+            }
+          }
+        }
+      }
+    },
+    "/gridset/{gridsetId}/": {
+      "get": {
+        "summary": "Lifemapper grid set service",
+        "description": "The grid set service endpoint returns a specific grid set\n",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PathGridsetId"
+          }
+        ],
+        "tags": [
+          "Gridset"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a grid set object",
+            "schema": {
+              "$ref": "#/definitions/Gridset"
+            }
+          }
+        }
+      }
+    },
+    "/gridset/{gridsetId}/matrix": {
+      "get": {
+        "summary": "Lifemapper gridset matrix listing service",
+        "description": "The matrix endpoint for a grid set provides a servic for querying \nLifemapper matrices that match a set of query parameters\n",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PathGridsetId"
+          },
+          {
+            "$ref": "#/parameters/UrlUser"
+          },
+          {
+            "$ref": "#/parameters/AfterTime"
+          },
+          {
+            "$ref": "#/parameters/AltPredCode"
+          },
+          {
+            "$ref": "#/parameters/BeforeTime"
+          },
+          {
+            "$ref": "#/parameters/DateCode"
+          },
+          {
+            "$ref": "#/parameters/EPSG"
+          },
+          {
+            "$ref": "#/parameters/GCM"
+          },
+          {
+            "$ref": "#/parameters/Keyword"
+          },
+          {
+            "$ref": "#/parameters/Limit"
+          },
+          {
+            "$ref": "#/parameters/MatrixType"
+          },
+          {
+            "$ref": "#/parameters/Offset"
+          },
+          {
+            "$ref": "#/parameters/Status"
+          }
+        ],
+        "tags": [
+          "Gridset",
+          "Matrix"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a list of matrix atoms",
+            "schema": {
+              "$ref": "#/definitions/AtomList"
+            }
+          }
+        }
+      }
+    },
+    "/gridset/{gridsetId}/matrix/count": {
+      "get": {
+        "summary": "Lifemapper gridset matrix count service",
+        "description": "The matrix endpoint for a grid set provides a service for querying \nLifemapper matrices that match a set of query parameters\n",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PathGridsetId"
+          },
+          {
+            "$ref": "#/parameters/UrlUser"
+          },
+          {
+            "$ref": "#/parameters/AfterTime"
+          },
+          {
+            "$ref": "#/parameters/AltPredCode"
+          },
+          {
+            "$ref": "#/parameters/BeforeTime"
+          },
+          {
+            "$ref": "#/parameters/DateCode"
+          },
+          {
+            "$ref": "#/parameters/EPSG"
+          },
+          {
+            "$ref": "#/parameters/GCM"
+          },
+          {
+            "$ref": "#/parameters/Keyword"
+          },
+          {
+            "$ref": "#/parameters/MatrixType"
+          },
+          {
+            "$ref": "#/parameters/Status"
+          }
+        ],
+        "tags": [
+          "Matrix",
+          "Gridset"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the number of matching matrices",
+            "schema": {
+              "$ref": "#/definitions/ObjectCount"
+            }
+          }
+        }
+      }
+    },
+    "/gridset/{gridsetId}/matrix/{matrixId}": {
+      "get": {
+        "summary": "Lifemapper gridset matrix service",
+        "description": "The matrix endpoint for a grid set provides a service for retrieving a  \nLifemapper matrix\n",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PathGridsetId"
+          },
+          {
+            "$ref": "#/parameters/PathMatrixId"
+          }
+        ],
+        "tags": [
+          "Gridset",
+          "Matrix"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a matrix",
+            "schema": {
+              "$ref": "#/definitions/Matrix"
+            }
+          },
+          "403": {
+            "description": "Error status thrown when the user does not have permission to access a matrix"
+          },
+          "404": {
+            "description": "Error status thrown when the requested matrix was not found"
+          }
+        }
+      }
+    },
+    "/gridset/{gridsetId}/matrix/{matrixId}/column": {
+      "get": {
+        "summary": "Lifemapper gridset matrix column service",
+        "description": "The matrix endpoint for a grid set provides a service for listing \nmatrix columns\n",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PathGridsetId"
+          },
+          {
+            "$ref": "#/parameters/PathMatrixId"
+          }
+        ],
+        "tags": [
+          "Gridset",
+          "Matrix",
+          "Matrix Column"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a matrix column atom list",
+            "schema": {
+              "$ref": "#/definitions/AtomList"
+            }
+          },
+          "403": {
+            "description": "Error status thrown when the user does not have permission to access a matrix"
+          },
+          "404": {
+            "description": "Error status thrown when the requested matrix was not found"
+          }
+        }
+      }
+    },
+    "/gridset/{gridsetId}/analysis": {
+      "post": {
+        "summary": "Perform analyses on the gridset",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PathGridsetId"
+          },
+          {
+            "$ref": "#/parameters/DoMCPA"
+          },
+          {
+            "$ref": "#/parameters/NumberOfPermutations"
+          },
+          {
+            "$ref": "#/parameters/DoCalculate"
+          }
+        ],
+        "tags": [
+          "Gridset",
+          "Analysis"
+        ],
+        "responses": {
+          "202": {
+            "description": "Returns the gridset object that the analyses were submitted for",
+            "schema": {
+              "$ref": "#/definitions/Gridset"
+            }
+          },
+          "400": {
+            "description": "Error status returned when there is a problem with user input"
+          },
+          "403": {
+            "description": "Error status thrown when the user does not have permission to access a gridset"
+          },
+          "404": {
+            "description": "Error status thrown when the requested gridset was not found"
+          },
+          "409": {
+            "description": "Error status thrown when the gridset is not ready for analyses to be run"
+          }
+        }
+      }
+    },
+    "/gridset/{gridsetId}/biogeo": {
+      "get": {
+        "summary": "Get a list of biogeographic hypothesis matrices for this gridset",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PathGridsetId"
+          }
+        ],
+        "tags": [
+          "Tree",
+          "BioGeo"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of biogeogrpahic hypothesis matrix objects",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Matrix"
+              }
+            }
+          },
+          "403": {
+            "description": "Error status returned when the user does not have permission to access a matrix"
+          },
+          "404": {
+            "description": "Error status returned when the requested matrix does not exist"
+          }
+        }
+      },
+      "post": {
+        "summary": "Post a set of new biogeographic hypotheses",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PathGridsetId"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Hypothesis POST body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BoomHypotheses"
+            }
+          }
+        ],
+        "tags": [
+          "Tree",
+          "BioGeo"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of posted biogeogrpahic hypothesis matrix objects",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Matrix"
+              }
+            }
+          },
+          "400": {
+            "description": "Error status returned when there is a problem with user input"
+          }
+        }
+      }
+    },
+    "/gridset/{gridsetId}/biogeo/{biogeoId}": {
+      "get": {
+        "summary": "Gets the specified biogeographic hypothesis matrix",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PathGridsetId"
+          },
+          {
+            "$ref": "#/parameters/PathBioGeoId"
+          }
+        ],
+        "tags": [
+          "BioGeo"
+        ],
+        "responses": {
+          "200": {
+            "description": "A biogeogrpahic hypothesis matrix",
+            "schema": {
+              "$ref": "#/definitions/Matrix"
+            }
+          },
+          "403": {
+            "description": "Error status returned when the user does not have permission to access the data"
+          },
+          "404": {
+            "description": "Error status returned when the requested matrix does not exist"
+          }
+        }
+      }
+    },
+    "/gridset/{gridsetId}/progress": {
+      "get": {
+        "summary": "Lifemapper gridset progress service",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PathGridsetId"
+          }
+        ],
+        "description": "The gridset progress endpoint returns information about the status of\nthe gridset's matrix and projection sub-objects\n",
+        "tags": [
+          "Gridset"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the progress of the gridset",
+            "schema": {
+              "$ref": "#/definitions/GridsetProgress"
+            }
+          }
+        }
+      }
+    },
+    "/gridset/{gridsetId}/tree": {
+      "get": {
+        "summary": "Get the tree associated with this gridset",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PathGridsetId"
+          }
+        ],
+        "tags": [
+          "Tree",
+          "Gridset"
+        ],
+        "responses": {
+          "200": {
+            "description": "The tree in the specified format",
+            "schema": {
+              "$ref": "#/definitions/Tree"
+            }
+          },
+          "403": {
+            "description": "Error status returned when the user does not have permission to access a tree"
+          },
+          "404": {
+            "description": "Error status returned when the requested tree does not exist"
+          }
+        }
+      },
+      "post": {
+        "summary": "Post a new phylogenetic tree",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PathGridsetId"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Tree POST body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TreePOST"
+            }
+          }
+        ],
+        "tags": [
+          "Tree",
+          "Gridset"
+        ],
+        "responses": {
+          "201": {
+            "description": "The posted tree",
+            "schema": {
+              "$ref": "#/definitions/Tree"
+            }
+          },
+          "400": {
+            "description": "Error status returned when there is a problem with user input"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a tree that you own",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PathGridsetId"
+          }
+        ],
+        "tags": [
+          "Tree",
+          "Gridset"
+        ],
+        "responses": {
+          "204": {
+            "description": "An OK message that the tree was deleted"
+          },
+          "403": {
+            "description": "Error status returned when the user does not have permission to delete a tree"
+          },
+          "404": {
+            "description": "Error status returned when the requested tree does not exist"
+          }
+        }
+      }
+    },
+    "/gridset/{gridsetId}/tree/{treeId}": {
+      "post": {
+        "summary": "Adds the specified phylogenetic tree to the gridset",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PathGridsetId"
+          },
+          {
+            "$ref": "#/parameters/PathTreeId"
+          }
+        ],
+        "tags": [
+          "Tree"
+        ],
+        "responses": {
+          "201": {
+            "description": "The posted tree",
+            "schema": {
+              "$ref": "#/definitions/Tree"
+            }
+          },
+          "400": {
+            "description": "Error status returned when there is a problem with user input"
+          },
+          "403": {
+            "description": "Error status returned when the user does not have permission to access a tree"
+          },
+          "404": {
+            "description": "Error status returned when the requested tree does not exist"
+          }
+        }
+      }
+    },
+    "/layer": {
+      "get": {
+        "summary": "Lifemapper layers listing services",
+        "description": "The layers endpoint provides a service for querying Lifemapper layers\nthat match a set of query parameters.\n",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Offset"
+          },
+          {
+            "$ref": "#/parameters/Limit"
+          },
+          {
+            "$ref": "#/parameters/UrlUser"
+          },
+          {
+            "$ref": "#/parameters/Squid"
+          },
+          {
+            "$ref": "#/parameters/AfterTime"
+          },
+          {
+            "$ref": "#/parameters/BeforeTime"
+          },
+          {
+            "$ref": "#/parameters/EPSG"
+          }
+        ],
+        "tags": [
+          "Layer"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of layers that match the specified criteria",
+            "schema": {
+              "$ref": "#/definitions/AtomList"
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Post a new layer",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "epsgCode",
+            "in": "query",
+            "description": "The EPSG code for the layer",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "A short name for the layer",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "isCategorical",
+            "in": "query",
+            "description": "An indicator if this layer is categorical or not (1=yes, 0=no)",
+            "required": false,
+            "type": "integer",
+            "format": "int2",
+            "minimum": 0,
+            "maximum": 1,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "envLayerTypeId",
+            "in": "query",
+            "description": "The type code id for this layer",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "metadata",
+            "in": "query",
+            "description": "Additional metadata to add to the layer",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "envLayerType",
+            "in": "query",
+            "description": "The type code for this layer",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "valUnits",
+            "in": "query",
+            "description": "The units for the values in each cell (such as degreesCelsius)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "gcmCode",
+            "in": "query",
+            "description": "GCM",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "alternatePredictionCode",
+            "in": "query",
+            "description": "Alternate prediction code",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "dateCode",
+            "in": "query",
+            "description": "Date code",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "file",
+            "in": "formData",
+            "description": "The layer content as a file",
+            "required": true,
+            "type": "file"
+          }
+        ],
+        "tags": [
+          "Layer"
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful layer post",
+            "schema": {
+              "$ref": "#/definitions/Layer"
+            }
+          },
+          "400": {
+            "description": "Error status thrown when there is a problem with user inputs"
+          }
+        }
+      }
+    },
+    "/layer/count": {
+      "get": {
+        "summary": "Lifemapper layers count service",
+        "description": "The layers endpoint provides a service counting how many Lifemapper \nlayers match a set of query parameters.\n",
+        "parameters": [
+          {
+            "$ref": "#/parameters/UrlUser"
+          },
+          {
+            "$ref": "#/parameters/Squid"
+          },
+          {
+            "$ref": "#/parameters/AfterTime"
+          },
+          {
+            "$ref": "#/parameters/BeforeTime"
+          },
+          {
+            "$ref": "#/parameters/EPSG"
+          }
+        ],
+        "tags": [
+          "Layer"
+        ],
+        "responses": {
+          "200": {
+            "description": "The number of layers that match the specified criteria",
+            "schema": {
+              "$ref": "#/definitions/ObjectCount"
+            }
+          }
+        }
+      }
+    },
+    "/layer/{layerId}": {
+      "get": {
+        "summary": "Get a layer",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PathLayerId"
+          }
+        ],
+        "tags": [
+          "Layer"
+        ],
+        "produces": [
+          "application/json",
+          "image/tiff",
+          "application/vnd.google-earth.kml+xml",
+          "application/vnd.google-earth.kmz"
+        ],
+        "responses": {
+          "200": {
+            "description": "Layer object in specified format",
+            "schema": {
+              "$ref": "#/definitions/Layer"
+            }
+          },
+          "403": {
+            "description": "Error status thrown when the user does not have permission to retrieve a layer"
+          },
+          "404": {
+            "description": "Error status thrown when the layer was not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a layer that you own",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PathLayerId"
+          }
+        ],
+        "tags": [
+          "Layer"
+        ],
+        "responses": {
+          "204": {
+            "description": "Returns an OK response that a layer is deleted"
+          },
+          "403": {
+            "description": "Error status thrown when the user does not have permission to delete a layer"
+          },
+          "404": {
+            "description": "Error status thrown when the layer was not found"
+          }
+        }
+      }
+    },
+    "/occurrence": {
+      "get": {
+        "summary": "Get a list of occurrence sets that match your criteria",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Offset"
+          },
+          {
+            "$ref": "#/parameters/Limit"
+          },
+          {
+            "$ref": "#/parameters/UrlUser"
+          },
+          {
+            "$ref": "#/parameters/MinimumNumberOfPoints"
+          },
+          {
+            "$ref": "#/parameters/DisplayName"
+          },
+          {
+            "$ref": "#/parameters/AfterTime"
+          },
+          {
+            "$ref": "#/parameters/BeforeTime"
+          },
+          {
+            "$ref": "#/parameters/EPSG"
+          },
+          {
+            "$ref": "#/parameters/Squid"
+          },
+          {
+            "$ref": "#/parameters/Status"
+          },
+          {
+            "$ref": "#/parameters/AfterStatus"
+          },
+          {
+            "$ref": "#/parameters/BeforeStatus"
+          },
+          {
+            "$ref": "#/parameters/GridsetId"
+          }
+        ],
+        "tags": [
+          "Occurrence Layer"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of occurrence sets that match your criteria",
+            "schema": {
+              "$ref": "#/definitions/AtomList"
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Perform a BOOM post",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "A boom request post body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BoomPOST"
+            }
+          }
+        ],
+        "tags": [
+          "Occurrence Layer"
+        ],
+        "responses": {
+          "202": {
+            "description": "An atom for the posted grid set",
+            "schema": {
+              "$ref": "#/definitions/AtomObject"
+            }
+          },
+          "400": {
+            "description": "Error status returned when there is a problem with user inputs"
+          }
+        }
+      }
+    },
+    "/occurrence/count": {
+      "get": {
+        "summary": "Get a count of occurrence layers that match your criteria",
+        "parameters": [
+          {
+            "$ref": "#/parameters/UrlUser"
+          },
+          {
+            "$ref": "#/parameters/MinimumNumberOfPoints"
+          },
+          {
+            "$ref": "#/parameters/DisplayName"
+          },
+          {
+            "$ref": "#/parameters/AfterTime"
+          },
+          {
+            "$ref": "#/parameters/BeforeTime"
+          },
+          {
+            "$ref": "#/parameters/EPSG"
+          },
+          {
+            "$ref": "#/parameters/Squid"
+          },
+          {
+            "$ref": "#/parameters/Status"
+          },
+          {
+            "$ref": "#/parameters/AfterStatus"
+          },
+          {
+            "$ref": "#/parameters/BeforeStatus"
+          },
+          {
+            "$ref": "#/parameters/GridsetId"
+          }
+        ],
+        "tags": [
+          "Occurrence Layer"
+        ],
+        "responses": {
+          "200": {
+            "description": "A count of occurrence sets that match your criteria",
+            "schema": {
+              "$ref": "#/definitions/ObjectCount"
+            }
+          }
+        }
+      }
+    },
+    "/occurrence/web": {
+      "get": {
+        "summary": "Get a list of occurrence layers that match your criteria",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Offset"
+          },
+          {
+            "$ref": "#/parameters/Limit"
+          },
+          {
+            "$ref": "#/parameters/UrlUser"
+          },
+          {
+            "$ref": "#/parameters/MinimumNumberOfPoints"
+          },
+          {
+            "$ref": "#/parameters/DisplayName"
+          },
+          {
+            "$ref": "#/parameters/AfterTime"
+          },
+          {
+            "$ref": "#/parameters/BeforeTime"
+          },
+          {
+            "$ref": "#/parameters/EPSG"
+          },
+          {
+            "$ref": "#/parameters/Squid"
+          },
+          {
+            "$ref": "#/parameters/Status"
+          },
+          {
+            "$ref": "#/parameters/AfterStatus"
+          },
+          {
+            "$ref": "#/parameters/BeforeStatus"
+          },
+          {
+            "$ref": "#/parameters/GridsetId"
+          }
+        ],
+        "tags": [
+          "Occurrence Layer"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of occurrence sets that match your criteria",
+            "schema": {
+              "$ref": "#/definitions/OccWebList"
+            }
+          }
+        }
+      }
+    },
+    "/occurrence/{occurrenceSetId}": {
+      "get": {
+        "summary": "Get an occurrence set in the specified format",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PathOccurrenceSetId"
+          }
+        ],
+        "tags": [
+          "Occurrence Layer"
+        ],
+        "produces": [
+          "application/json",
+          "application/x-gzip",
+          "application/vnd.google-earth.kml+xml",
+          "application/vnd.google-earth.kmz"
+        ],
+        "responses": {
+          "200": {
+            "description": "An occurrence set in the specified format",
+            "schema": {
+              "$ref": "#/definitions/OccurrenceSet"
+            }
+          },
+          "403": {
+            "description": "Error status thrown when the user does not have permission to access the occurrence layer"
+          },
+          "404": {
+            "description": "Error status thrown when the requested occurrence layer does not exist"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an occurrence set you own",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PathOccurrenceSetId"
+          }
+        ],
+        "tags": [
+          "Occurrence Layer"
+        ],
+        "responses": {
+          "204": {
+            "description": "OK message that an occurrence set was deleted"
+          },
+          "403": {
+            "description": "Error status thrown when the user does not have permission to delete the occurrence layer"
+          },
+          "404": {
+            "description": "Error status thrown when the requested occurrence layer does not exist"
+          }
+        }
+      }
+    },
+    "/opentree": {
+      "post": {
+        "summary": "Retrieve a tree from Open Tree matching the provided input",
+        "tags": [
+          "OpenTree",
+          "Tree"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "A list of GBIF Taxon IDs to get a tree for",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/OpenTreePOST"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "A summary of the tree request performed",
+            "schema": {
+              "$ref": "#/definitions/OpenTreePOSTresponse"
+            }
+          }
+        }
+      }
+    },
+    "/sdmProject": {
+      "get": {
+        "summary": "Get a list of projections that match your criteria",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Offset"
+          },
+          {
+            "$ref": "#/parameters/Limit"
+          },
+          {
+            "$ref": "#/parameters/UrlUser"
+          },
+          {
+            "$ref": "#/parameters/DisplayName"
+          },
+          {
+            "$ref": "#/parameters/AfterTime"
+          },
+          {
+            "$ref": "#/parameters/BeforeTime"
+          },
+          {
+            "$ref": "#/parameters/EPSG"
+          },
+          {
+            "$ref": "#/parameters/Status"
+          },
+          {
+            "$ref": "#/parameters/AfterStatus"
+          },
+          {
+            "$ref": "#/parameters/BeforeStatus"
+          },
+          {
+            "$ref": "#/parameters/OccurrenceSetId"
+          },
+          {
+            "$ref": "#/parameters/AlgorithmCode"
+          },
+          {
+            "$ref": "#/parameters/ModelScenarioCode"
+          },
+          {
+            "$ref": "#/parameters/ProjectScenarioCode"
+          },
+          {
+            "$ref": "#/parameters/Squid"
+          },
+          {
+            "$ref": "#/parameters/GridsetId"
+          }
+        ],
+        "tags": [
+          "SDM Projection"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of projections",
+            "schema": {
+              "$ref": "#/definitions/AtomList"
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Post a group of projections",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "A projection(s) request post body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BoomPOST"
+            }
+          }
+        ],
+        "tags": [
+          "SDM Projection"
+        ],
+        "responses": {
+          "202": {
+            "description": "An atom for the posted grid set",
+            "schema": {
+              "$ref": "#/definitions/AtomObject"
+            }
+          },
+          "400": {
+            "description": "Error status returned when there is a problem with user inputs"
+          }
+        }
+      }
+    },
+    "/sdmProject/count": {
+      "get": {
+        "summary": "Get a count of projections that match your criteria",
+        "parameters": [
+          {
+            "$ref": "#/parameters/UrlUser"
+          },
+          {
+            "$ref": "#/parameters/DisplayName"
+          },
+          {
+            "$ref": "#/parameters/AfterTime"
+          },
+          {
+            "$ref": "#/parameters/BeforeTime"
+          },
+          {
+            "$ref": "#/parameters/EPSG"
+          },
+          {
+            "$ref": "#/parameters/Status"
+          },
+          {
+            "$ref": "#/parameters/AfterStatus"
+          },
+          {
+            "$ref": "#/parameters/BeforeStatus"
+          },
+          {
+            "$ref": "#/parameters/OccurrenceSetId"
+          },
+          {
+            "$ref": "#/parameters/AlgorithmCode"
+          },
+          {
+            "$ref": "#/parameters/ModelScenarioCode"
+          },
+          {
+            "$ref": "#/parameters/ProjectScenarioCode"
+          },
+          {
+            "$ref": "#/parameters/Squid"
+          },
+          {
+            "$ref": "#/parameters/GridsetId"
+          }
+        ],
+        "tags": [
+          "SDM Projection"
+        ],
+        "responses": {
+          "200": {
+            "description": "A count of items matching the criteria",
+            "schema": {
+              "$ref": "#/definitions/ObjectCount"
+            }
+          }
+        }
+      }
+    },
+    "/sdmProject/{projectionId}": {
+      "get": {
+        "summary": "Get a projection",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PathProjectionId"
+          }
+        ],
+        "tags": [
+          "SDM Projection"
+        ],
+        "produces": [
+          "application/json",
+          "image/tiff",
+          "application/vnd.google-earth.kml+xml",
+          "application/vnd.google-earth.kmz"
+        ],
+        "responses": {
+          "200": {
+            "description": "Get a projection in the format you specify",
+            "schema": {
+              "$ref": "#/definitions/Projection"
+            }
+          },
+          "403": {
+            "description": "Error status raised when the user does not have permission to access a SDM projection object"
+          },
+          "404": {
+            "description": "Error status raised when the SDM projection object requested was not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a projection that you own",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PathProjectionId"
+          }
+        ],
+        "tags": [
+          "SDM Projection"
+        ],
+        "responses": {
+          "204": {
+            "description": "OK Message that a projection was deleted"
+          },
+          "403": {
+            "description": "Error status raised when the user does not have permission to delete a SDM projection object"
+          },
+          "404": {
+            "description": "Error status raised when the SDM projection object requested was not found"
+          }
+        }
+      }
+    },
+    "/scenario": {
+      "get": {
+        "summary": "Get a list of scenarios that match your criteria",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Offset"
+          },
+          {
+            "$ref": "#/parameters/Limit"
+          },
+          {
+            "$ref": "#/parameters/UrlUser"
+          },
+          {
+            "$ref": "#/parameters/BeforeTime"
+          },
+          {
+            "$ref": "#/parameters/AfterTime"
+          },
+          {
+            "$ref": "#/parameters/EPSG"
+          },
+          {
+            "$ref": "#/parameters/GCM"
+          },
+          {
+            "$ref": "#/parameters/AltPredCode"
+          },
+          {
+            "$ref": "#/parameters/DateCode"
+          }
+        ],
+        "tags": [
+          "Scenario"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of scenarios matching the criteria",
+            "schema": {
+              "$ref": "#/definitions/AtomList"
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Post a new climate scenario for SDM",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Scenario POST body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ScenarioPOST"
+            }
+          }
+        ],
+        "tags": [
+          "Scenario"
+        ],
+        "responses": {
+          "201": {
+            "description": "The posted scenario",
+            "schema": {
+              "$ref": "#/definitions/Scenario"
+            }
+          },
+          "400": {
+            "description": "Error status returned when there is a problem with user input"
+          }
+        }
+      }
+    },
+    "/scenario/count": {
+      "get": {
+        "summary": "Get the number of scenarios that match your criteria",
+        "parameters": [
+          {
+            "$ref": "#/parameters/UrlUser"
+          },
+          {
+            "$ref": "#/parameters/BeforeTime"
+          },
+          {
+            "$ref": "#/parameters/AfterTime"
+          },
+          {
+            "$ref": "#/parameters/EPSG"
+          },
+          {
+            "$ref": "#/parameters/GCM"
+          },
+          {
+            "$ref": "#/parameters/AltPredCode"
+          },
+          {
+            "$ref": "#/parameters/DateCode"
+          }
+        ],
+        "tags": [
+          "Scenario"
+        ],
+        "responses": {
+          "200": {
+            "description": "The number of scenarios matching the criteria",
+            "schema": {
+              "$ref": "#/definitions/ObjectCount"
+            }
+          }
+        }
+      }
+    },
+    "/scenario/{scenarioId}": {
+      "get": {
+        "summary": "Get a scenario",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PathScenarioId"
+          }
+        ],
+        "tags": [
+          "Scenario"
+        ],
+        "responses": {
+          "200": {
+            "description": "The scenario in the specified format",
+            "schema": {
+              "$ref": "#/definitions/Scenario"
+            }
+          },
+          "403": {
+            "description": "Error status returned when the user does not have permission to access a scenario"
+          },
+          "404": {
+            "description": "Error status returned when the requested scenario does not exist"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a scenario that you own",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PathScenarioId"
+          }
+        ],
+        "tags": [
+          "Scenario"
+        ],
+        "responses": {
+          "204": {
+            "description": "An OK message that the scenario was deleted"
+          },
+          "403": {
+            "description": "Error status returned when the user does not have permission to delete a scenario"
+          },
+          "404": {
+            "description": "Error status returned when the requested scenario does not exist"
+          }
+        }
+      }
+    },
+    "/scenpackage": {
+      "get": {
+        "summary": "Get a list of scenario packages that match your criteria",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Offset"
+          },
+          {
+            "$ref": "#/parameters/Limit"
+          },
+          {
+            "$ref": "#/parameters/UrlUser"
+          },
+          {
+            "$ref": "#/parameters/BeforeTime"
+          },
+          {
+            "$ref": "#/parameters/AfterTime"
+          },
+          {
+            "$ref": "#/parameters/ScenarioId"
+          }
+        ],
+        "tags": [
+          "Scenario Package"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of scenario packages matching the criteria",
+            "schema": {
+              "$ref": "#/definitions/AtomList"
+            }
+          }
+        }
+      }
+    },
+    "/scenpackage/count": {
+      "get": {
+        "summary": "Get the number of scenario packages that match your criteria",
+        "parameters": [
+          {
+            "$ref": "#/parameters/UrlUser"
+          },
+          {
+            "$ref": "#/parameters/BeforeTime"
+          },
+          {
+            "$ref": "#/parameters/AfterTime"
+          },
+          {
+            "$ref": "#/parameters/ScenarioId"
+          }
+        ],
+        "tags": [
+          "Scenario Package"
+        ],
+        "responses": {
+          "200": {
+            "description": "The number of scenario packages matching the criteria",
+            "schema": {
+              "$ref": "#/definitions/ObjectCount"
+            }
+          }
+        }
+      }
+    },
+    "/scenpackage/{scenarioPackageId}": {
+      "get": {
+        "summary": "Get a scenario package",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PathScenarioPackageId"
+          }
+        ],
+        "tags": [
+          "Scenario Package"
+        ],
+        "responses": {
+          "200": {
+            "description": "The scenario package in the specified format",
+            "schema": {
+              "$ref": "#/definitions/ScenarioPackage"
+            }
+          },
+          "403": {
+            "description": "Error status returned when the user does not have permission to access a scenario package"
+          },
+          "404": {
+            "description": "Error status returned when the requested scenario package does not exist"
+          }
+        }
+      }
+    },
+    "/shapegrid": {
+      "get": {
+        "summary": "Get a list of shapegrids that match your criteria",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Offset"
+          },
+          {
+            "$ref": "#/parameters/Limit"
+          },
+          {
+            "$ref": "#/parameters/UrlUser"
+          },
+          {
+            "$ref": "#/parameters/CellSides"
+          },
+          {
+            "$ref": "#/parameters/CellSize"
+          },
+          {
+            "$ref": "#/parameters/AfterTime"
+          },
+          {
+            "$ref": "#/parameters/BeforeTime"
+          },
+          {
+            "$ref": "#/parameters/EPSG"
+          }
+        ],
+        "tags": [
+          "Shapegrid"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of shapegrids matching the criteria",
+            "schema": {
+              "$ref": "#/definitions/AtomList"
+            }
+          }
+        }
+      }
+    },
+    "/shapegrid/count": {
+      "get": {
+        "summary": "Get the number of shapegrids that match your criteria",
+        "parameters": [
+          {
+            "$ref": "#/parameters/UrlUser"
+          },
+          {
+            "$ref": "#/parameters/CellSides"
+          },
+          {
+            "$ref": "#/parameters/CellSize"
+          },
+          {
+            "$ref": "#/parameters/AfterTime"
+          },
+          {
+            "$ref": "#/parameters/BeforeTime"
+          },
+          {
+            "$ref": "#/parameters/EPSG"
+          }
+        ],
+        "tags": [
+          "Shapegrid"
+        ],
+        "responses": {
+          "200": {
+            "description": "The number of shapegrids matching the criteria",
+            "schema": {
+              "$ref": "#/definitions/ObjectCount"
+            }
+          }
+        }
+      }
+    },
+    "/shapegrid/{shapegridId}": {
+      "get": {
+        "summary": "Get a shapegrid",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PathShapegridId"
+          }
+        ],
+        "tags": [
+          "Shapegrid"
+        ],
+        "responses": {
+          "200": {
+            "description": "The shapegrid in the specified format",
+            "schema": {
+              "$ref": "#/definitions/Shapegrid"
+            }
+          },
+          "403": {
+            "description": "Error status returned when the user does not have permission to access a shapegrid"
+          },
+          "404": {
+            "description": "Error status returned when the requested shapegrid does not exist"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a shapegrid that you own",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PathShapegridId"
+          }
+        ],
+        "tags": [
+          "Shapegrid"
+        ],
+        "responses": {
+          "204": {
+            "description": "An OK message that the shapegrid was deleted"
+          },
+          "403": {
+            "description": "Error status returned when the user does not have permission to delete a shapegrid"
+          },
+          "404": {
+            "description": "Error status returned when the requested shapegrid does not exist"
+          }
+        }
+      }
+    },
+    "/taxonomy": {
+      "get": {
+        "summary": "Gets a list of taxonomy objects that match your criteria",
+        "parameters": [
+          {
+            "$ref": "#/parameters/TaxonKingdom"
+          },
+          {
+            "$ref": "#/parameters/TaxonPhylum"
+          },
+          {
+            "$ref": "#/parameters/TaxonClass"
+          },
+          {
+            "$ref": "#/parameters/TaxonOrder"
+          },
+          {
+            "$ref": "#/parameters/TaxonFamily"
+          },
+          {
+            "$ref": "#/parameters/TaxonGenus"
+          },
+          {
+            "$ref": "#/parameters/TaxonKey"
+          },
+          {
+            "$ref": "#/parameters/ScientificName"
+          },
+          {
+            "$ref": "#/parameters/CanonicalName"
+          },
+          {
+            "$ref": "#/parameters/Squid"
+          },
+          {
+            "$ref": "#/parameters/Limit"
+          }
+        ],
+        "tags": [
+          "Taxonomy"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of taxonmy objects matching the criteria",
+            "schema": {
+              "$ref": "#/definitions/TaxonomyList"
+            }
+          }
+        }
+      }
+    },
+    "/tree": {
+      "get": {
+        "summary": "Get a list of trees that match your criteria",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Offset"
+          },
+          {
+            "$ref": "#/parameters/Limit"
+          },
+          {
+            "$ref": "#/parameters/UrlUser"
+          },
+          {
+            "$ref": "#/parameters/TreeName"
+          },
+          {
+            "$ref": "#/parameters/IsBinary"
+          },
+          {
+            "$ref": "#/parameters/IsUltrametric"
+          },
+          {
+            "$ref": "#/parameters/HasBranchLengths"
+          },
+          {
+            "$ref": "#/parameters/MetaString"
+          },
+          {
+            "$ref": "#/parameters/AfterTime"
+          },
+          {
+            "$ref": "#/parameters/BeforeTime"
+          }
+        ],
+        "tags": [
+          "Tree"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of trees matching the criteria",
+            "schema": {
+              "$ref": "#/definitions/AtomList"
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Post a new phylogenetic tree",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Tree POST body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TreePOST"
+            }
+          }
+        ],
+        "tags": [
+          "Tree"
+        ],
+        "responses": {
+          "201": {
+            "description": "The posted tree",
+            "schema": {
+              "$ref": "#/definitions/Tree"
+            }
+          },
+          "400": {
+            "description": "Error status returned when there is a problem with user input"
+          }
+        }
+      }
+    },
+    "/tree/count": {
+      "get": {
+        "summary": "Get the number of trees that match your criteria",
+        "parameters": [
+          {
+            "$ref": "#/parameters/UrlUser"
+          },
+          {
+            "$ref": "#/parameters/TreeName"
+          },
+          {
+            "$ref": "#/parameters/IsBinary"
+          },
+          {
+            "$ref": "#/parameters/IsUltrametric"
+          },
+          {
+            "$ref": "#/parameters/HasBranchLengths"
+          },
+          {
+            "$ref": "#/parameters/MetaString"
+          },
+          {
+            "$ref": "#/parameters/AfterTime"
+          },
+          {
+            "$ref": "#/parameters/BeforeTime"
+          }
+        ],
+        "tags": [
+          "Tree"
+        ],
+        "responses": {
+          "200": {
+            "description": "The number of trees matching the criteria",
+            "schema": {
+              "$ref": "#/definitions/ObjectCount"
+            }
+          }
+        }
+      }
+    },
+    "/tree/{treeId}": {
+      "get": {
+        "summary": "Get a tree",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PathTreeId"
+          }
+        ],
+        "tags": [
+          "Tree"
+        ],
+        "responses": {
+          "200": {
+            "description": "The tree in the specified format",
+            "schema": {
+              "$ref": "#/definitions/Tree"
+            }
+          },
+          "403": {
+            "description": "Error status returned when the user does not have permission to access a tree"
+          },
+          "404": {
+            "description": "Error status returned when the requested tree does not exist"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a tree that you own",
+        "parameters": [
+          {
+            "$ref": "#/parameters/PathTreeId"
+          }
+        ],
+        "tags": [
+          "Tree"
+        ],
+        "responses": {
+          "204": {
+            "description": "An OK message that the tree was deleted"
+          },
+          "403": {
+            "description": "Error status returned when the user does not have permission to delete a tree"
+          },
+          "404": {
+            "description": "Error status returned when the requested tree does not exist"
+          }
+        }
+      }
+    },
+    "/upload": {
+      "post": {
+        "summary": "Post a new data set for a user",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "fileName",
+            "in": "query",
+            "description": "The name of the file / package to be stored",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "uploadType",
+            "in": "query",
+            "description": "The type of data being uploaded",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "biogeo",
+              "climate",
+              "occurrence",
+              "tree"
+            ]
+          },
+          {
+            "name": "metadata",
+            "in": "query",
+            "description": "Metadata about the occurrence upload (if posting occurrence data).\nShould match schema at '#/definitions/OccurrenceMetadata'\n",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "file",
+            "in": "formData",
+            "description": "The data posted as a file",
+            "required": true,
+            "type": "file"
+          }
+        ],
+        "tags": [
+          "Upload"
+        ],
+        "responses": {
+          "202": {
+            "description": "A small JSON chunk indicating the data was posted"
+          },
+          "400": {
+            "description": "Error status returned when there is a problem with user input"
+          },
+          "409": {
+            "description": "Post failed due to duplicate name"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Algorithm": {
+      "type": "object",
+      "required": [
+        "code",
+        "parameters"
+      ],
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "parameters": {
+          "type": "object"
+        }
+      }
+    },
+    "AtomList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/AtomObject"
+      }
+    },
+    "AtomObject": {
+      "type": "object",
+      "required": [
+        "epsg",
+        "id",
+        "modificationTime",
+        "name",
+        "url"
+      ],
+      "properties": {
+        "epsg": {
+          "type": "integer",
+          "description": "The EPSG code of the object"
+        },
+        "id": {
+          "type": "integer",
+          "description": "The id of the object"
+        },
+        "modificationTime": {
+          "type": "string",
+          "description": "The date / time this object was last modified"
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the object"
+        },
+        "url": {
+          "type": "string",
+          "description": "A URL for more information about this object"
+        }
+      }
+    },
+    "BiotaphyPointsPost": {
+      "description": "A list of taxon ids to obtain",
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "BiotaphyPointsResponse": {
+      "description": "Point counts for the given taxon ids",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "taxon_id",
+          "count"
+        ],
+        "properties": {
+          "taxon_id": {
+            "type": "integer"
+          },
+          "count": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "BoomGlobalPAM": {
+      "type": "object",
+      "description": "A global PAM post object",
+      "required": [
+        "shapegrid",
+        "intersect_parameters"
+      ],
+      "properties": {
+        "shapegrid": {
+          "type": "object",
+          "properties": {
+            "ref": {
+              "type": "string"
+            },
+            "id": {
+              "type": "integer"
+            },
+            "post": {
+              "$ref": "#/definitions/ShapegridPOST"
+            }
+          }
+        },
+        "intersect_parameters": {
+          "type": "object",
+          "required": [
+            "min_presence",
+            "max_presence",
+            "value_name",
+            "min_percent"
+          ],
+          "properties": {
+            "min_presence": {
+              "description": "The minimum value that should be considered \"present\"",
+              "type": "integer",
+              "minimum": 1
+            },
+            "max_presence": {
+              "description": "The maximum value that should be considered \"present\"",
+              "type": "integer",
+              "minimum": 1
+            },
+            "value_name": {
+              "description": "Use pixel for rasters",
+              "type": "string"
+            },
+            "min_percent": {
+              "description": "The minimum percentage of the grid cell classified as present to \nconsider the grid cell present\n",
+              "type": "integer"
+            }
+          }
+        }
+      }
+    },
+    "BoomHypotheses": {
+      "type": "object",
+      "description": "Biogeographic hypotheses specification for use with MCPA",
+      "required": [
+        "hypothesis_package_reference"
+      ],
+      "properties": {
+        "hypothesis_package_reference": {
+          "description": "Reference hypothesis package previously uploaded",
+          "type": "object",
+          "required": [
+            "identifier",
+            "reference_type"
+          ],
+          "properties": {
+            "identifier": {
+              "type": "string"
+            },
+            "reference_type": {
+              "type": "string",
+              "enum": [
+                "gridset",
+                "upload"
+              ]
+            }
+          }
+        },
+        "layers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "file_name"
+            ],
+            "properties": {
+              "event_field": {
+                "type": "string"
+              },
+              "file_name": {
+                "type": "string"
+              },
+              "hypothesis_name": {
+                "type": "string"
+              },
+              "keywords": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "BoomMCPA": {
+      "type": "object",
+      "required": [
+        "compute_pam_stats",
+        "hypotheses_package_name"
+      ],
+      "properties": {
+        "compute_mcpa": {
+          "type": "integer",
+          "enum": [
+            0,
+            1
+          ]
+        },
+        "hypotheses_package_name": {
+          "description": "The name of the previously uploaded hypothesis package",
+          "type": "string"
+        }
+      }
+    },
+    "BoomOccurrenceSet": {
+      "type": "object",
+      "description": "Multiple occurrence set specification either via occurrence set ids or\ngenerated by processing a CSV file\n",
+      "properties": {
+        "delimiter": {
+          "description": "The delimiter for the user occurrence data.  Only provide if using\n\"points_filename\".  Defaults to tab \"\\t\".\n",
+          "type": "string"
+        },
+        "occurrence_ids": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "taxon_ids": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "taxon_names": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "points_filename": {
+          "description": "This is the name of a previously uploaded file in the user space\n",
+          "type": "string"
+        },
+        "point_count_min": {
+          "type": "integer"
+        }
+      }
+    },
+    "BoomPAMStats": {
+      "type": "object",
+      "description": "Including this option will generate PAM stats for each of the PAMs \nproduced in the BOOM workflow.  \n",
+      "required": [
+        "compute_pam_stats"
+      ],
+      "properties": {
+        "compute_pam_stats": {
+          "type": "integer",
+          "enum": [
+            0,
+            1
+          ]
+        }
+      }
+    },
+    "BoomPOST": {
+      "type": "object",
+      "description": "The projection POST object is flexible in that you can specify one or\nmore projections with a single request.  An SDM model is created, but not\nreturned, for every algorithm / occurrence set / model scenario\ncombination.  An SDM projection object is created for every algorithm /\noccurrence set / model scenario / projection scenario combination\n",
+      "properties": {
+        "archive_name": {
+          "type": "string"
+        },
+        "global_pam": {
+          "$ref": "#/definitions/BoomGlobalPAM"
+        },
+        "mcpa": {
+          "$ref": "#/definitions/BoomMCPA"
+        },
+        "occurrence": {
+          "$ref": "#/definitions/BoomOccurrenceSet"
+        },
+        "pam_stats": {
+          "$ref": "#/definitions/BoomPAMStats"
+        },
+        "scenario_package": {
+          "$ref": "#/definitions/BoomScenarioPackage"
+        },
+        "sdm": {
+          "$ref": "#/definitions/BoomSDMs"
+        },
+        "tree": {
+          "type": "object",
+          "description": "Specify the tree to use for this request by id",
+          "properties": {
+            "tree_file_name": {
+              "description": "The file name of the tree that was uploaded",
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "BoomScenarioPackage": {
+      "type": "object",
+      "properties": {
+        "scenario_package_filename": {
+          "type": "string"
+        },
+        "scenario_package_name": {
+          "type": "string",
+          "description": "The name of a scenario package to use"
+        },
+        "model_scenario": {
+          "type": "object",
+          "description": "Pick one of the options. Only scenario id is enabled now",
+          "properties": {
+            "scenario_code": {
+              "type": "string"
+            }
+          }
+        },
+        "projection_scenario": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "description": "Use one or the other",
+            "properties": {
+              "scenario_code": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "BoomSDMs": {
+      "type": "object",
+      "description": "This section will specify how to post multiple SDMs in one fell swoop\n",
+      "required": [
+        "algorithm"
+      ],
+      "properties": {
+        "algorithm": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Algorithm"
+          }
+        },
+        "hull_region_intersect_mask": {
+          "type": "object",
+          "description": "This is the only intersect method currently available.  If specified,\nit will intersect a convex hull around the occurrence points with an\necoregions layer to create a mask\n",
+          "properties": {
+            "buffer": {
+              "type": "number",
+              "description": "The buffer, in map units, to use around the points"
+            },
+            "region": {
+              "type": "string",
+              "description": "Layer name in the scenario package to use for ecoregion"
+            }
+          }
+        }
+      }
+    },
+    "EnvLayer": {
+      "type": "object",
+      "properties": {
+        "objectType": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "user": {
+          "type": "string"
+        },
+        "status": {
+          "type": "integer"
+        },
+        "statusModTime": {
+          "type": "string",
+          "description": "The date / time this object was last modified"
+        },
+        "etag": {
+          "type": "string"
+        },
+        "metadata": {
+          "type": "object"
+        },
+        "map": {
+          "$ref": "#/definitions/Map"
+        },
+        "spatialRaster": {
+          "$ref": "#/definitions/SpatialRaster"
+        },
+        "envCode": {
+          "type": "string"
+        },
+        "gcmCode": {
+          "type": "string"
+        },
+        "altPredCode": {
+          "type": "string"
+        },
+        "dateCode": {
+          "type": "string"
+        }
+      }
+    },
+    "GbifPost": {
+      "description": "A list of names to be matched through GBIF",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "GbifResponse": {
+      "description": "The mapping from names to GBIF accepted names and taxon ids",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "search_name": {
+            "type": "string"
+          },
+          "accepted_name": {
+            "type": "string"
+          },
+          "taxon_id": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "Gridset": {
+      "type": "object",
+      "required": [
+        "id",
+        "matrices"
+      ],
+      "properties": {
+        "objectType": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "matrices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Matrix"
+          }
+        }
+      }
+    },
+    "GridsetProgress": {
+      "type": "object",
+      "required": [
+        "progress"
+      ],
+      "properties": {
+        "progress": {
+          "type": "number",
+          "description": "The overall progress of the gridset"
+        },
+        "matrices": {
+          "type": "object",
+          "required": [
+            "waiting",
+            "running",
+            "complete",
+            "error"
+          ],
+          "properties": {
+            "waiting": {
+              "type": "integer",
+              "description": "The number of matrices waiting to run"
+            },
+            "running": {
+              "type": "integer",
+              "description": "The number of matrices currently running"
+            },
+            "complete": {
+              "type": "integer",
+              "description": "The number of completed matrices"
+            },
+            "error": {
+              "type": "integer",
+              "description": "The number of matrices that have failed"
+            }
+          }
+        },
+        "message": {
+          "type": "string",
+          "description": "May be populated with a message explaining gridset status or progress.\n"
+        },
+        "projections": {
+          "type": "object",
+          "required": [
+            "waiting",
+            "running",
+            "complete",
+            "error"
+          ],
+          "properties": {
+            "waiting": {
+              "type": "integer",
+              "description": "The number of projections waiting to run"
+            },
+            "running": {
+              "type": "integer",
+              "description": "The number of projections currently running"
+            },
+            "complete": {
+              "type": "integer",
+              "description": "The number of completed projections"
+            },
+            "error": {
+              "type": "integer",
+              "description": "The number of projections that have failed"
+            }
+          }
+        },
+        "workflows": {
+          "type": "object",
+          "required": [
+            "waiting",
+            "running",
+            "complete",
+            "error"
+          ],
+          "properties": {
+            "waiting": {
+              "type": "integer",
+              "description": "The number of workflows waiting to run"
+            },
+            "running": {
+              "type": "integer",
+              "description": "The number of workflows currently running"
+            },
+            "complete": {
+              "type": "integer",
+              "description": "The number of completed workflows"
+            },
+            "error": {
+              "type": "integer",
+              "description": "The number of workflows that have failed"
+            }
+          }
+        }
+      }
+    },
+    "Layer": {
+      "type": "object",
+      "properties": {
+        "objectType": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "user": {
+          "type": "string"
+        },
+        "status": {
+          "type": "integer"
+        },
+        "statusModTime": {
+          "type": "string",
+          "description": "The date / time this object was last modified"
+        },
+        "etag": {
+          "type": "string"
+        },
+        "metadata": {
+          "type": "object"
+        },
+        "spatialRaster": {
+          "$ref": "#/definitions/SpatialRaster"
+        }
+      }
+    },
+    "Map": {
+      "type": "object",
+      "required": [
+        "endpoint",
+        "mapName",
+        "layers"
+      ],
+      "properties": {
+        "endpoint": {
+          "type": "string"
+        },
+        "mapName": {
+          "type": "string"
+        },
+        "layers": {
+          "type": "array",
+          "items": {
+            "required": [
+              "layerName",
+              "metadataUrl"
+            ],
+            "properties": {
+              "metadataUrl": {
+                "type": "string"
+              },
+              "layerName": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "Matrix": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "status": {
+          "type": "integer"
+        }
+      }
+    },
+    "MatrixColumn": {
+      "type": "object"
+    },
+    "ObjectCount": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer"
+        }
+      }
+    },
+    "ObjectRef": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "metadataUrl": {
+          "type": "string"
+        }
+      }
+    },
+    "OccurrenceMetadata": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string",
+                "description": "Original field name in CSV or column index (zero-based)"
+              },
+              "shortName": {
+                "type": "string",
+                "description": "A short name for this field (10 characters or less)"
+              },
+              "fieldType": {
+                "type": "string",
+                "description": "The content of this filed",
+                "enum": [
+                  "integer",
+                  "real",
+                  "string"
+                ]
+              }
+            }
+          }
+        },
+        "role": {
+          "type": "object",
+          "required": [
+            "latitude",
+            "longitude",
+            "taxaName"
+          ],
+          "properties": {
+            "groupBy": {
+              "description": "If this is provided, use this field to group occurrence data.  \nIf it is not provided, taxaName will be used.  \n",
+              "type": "string"
+            },
+            "latitude": {
+              "description": "The field key for the field with latitude information.  Required\nif geopoint is not provided\n",
+              "type": "string"
+            },
+            "longitude": {
+              "description": "The field key for the field with longitude information.  Required\nif geopoint is not provided\n",
+              "type": "string"
+            },
+            "taxaName": {
+              "description": "The field key for the field containing taxon names. If there are\nmultiple values that should be grouped together, provide\n\"groupBy\" as well to group those values.\n",
+              "type": "string"
+            },
+            "uniqueId": {
+              "description": "The field key for the field containing a unique identifier for \nthe records.\n",
+              "type": "string"
+            }
+          }
+        },
+        "delimiter": {
+          "type": "string"
+        }
+      }
+    },
+    "OccurrenceSet": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "objectType": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "url": {
+          "type": "string"
+        },
+        "user": {
+          "type": "string"
+        },
+        "status": {
+          "type": "integer"
+        },
+        "statusModTime": {
+          "type": "string",
+          "description": "The date / time this object was last modified"
+        },
+        "etag": {
+          "type": "string"
+        },
+        "metadata": {
+          "type": "object"
+        },
+        "map": {
+          "$ref": "#/definitions/SingleLayerMap"
+        },
+        "spatialVector": {
+          "$ref": "#/definitions/SpatialVector"
+        },
+        "speciesName": {
+          "type": "string"
+        },
+        "squid": {
+          "type": "string"
+        }
+      }
+    },
+    "OccWebList": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "metadata_url",
+          "name",
+          "modification_time",
+          "epsg",
+          "status",
+          "count"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "metadata_url": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "modification_time": {
+            "type": "number"
+          },
+          "epsg": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "integer"
+          },
+          "count": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "OpenTreePOST": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "OpenTreePOSTresponse": {
+      "type": "object",
+      "required": [
+        "nontree_ids",
+        "unmatched_ids"
+      ],
+      "properties": {
+        "nontree_ids": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "tree_data": {
+          "description": "The tree data in the format specified by tree_format",
+          "type": "string"
+        },
+        "tree_format": {
+          "type": "string"
+        },
+        "tree_name": {
+          "type": "string"
+        },
+        "unmatched_ids": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "Projection": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "objectType": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "url": {
+          "type": "string"
+        },
+        "user": {
+          "type": "string"
+        },
+        "status": {
+          "type": "integer"
+        },
+        "statusModTime": {
+          "type": "string",
+          "description": "The date / time this object was last modified"
+        },
+        "etag": {
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/definitions/ProjectionMetadata"
+        },
+        "map": {
+          "$ref": "#/definitions/SingleLayerMap"
+        },
+        "spatialRaster": {
+          "$ref": "#/definitions/SpatialRaster"
+        },
+        "algorithm": {
+          "$ref": "#/definitions/Algorithm"
+        },
+        "modelScenario": {
+          "$ref": "#/definitions/ScenarioRef"
+        },
+        "projectionScenario": {
+          "$ref": "#/definitions/ScenarioRef"
+        },
+        "speciesName": {
+          "type": "string"
+        },
+        "squid": {
+          "type": "string"
+        },
+        "occurrenceSet": {
+          "$ref": "#/definitions/ObjectRef"
+        }
+      }
+    },
+    "ProjectionMetadata": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "isDiscrete": {
+          "type": "boolean"
+        },
+        "keywords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "Scenario": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "objectType": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "url": {
+          "type": "string"
+        },
+        "etag": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/definitions/ScenarioMetadata"
+        },
+        "map": {
+          "$ref": "#/definitions/Map"
+        },
+        "spatial": {
+          "$ref": "#/definitions/Spatial"
+        },
+        "environmentalCode": {
+          "type": "string"
+        },
+        "gcmCode": {
+          "type": "string"
+        },
+        "alternatePrediction": {
+          "type": "string"
+        },
+        "dateCode": {
+          "type": "string"
+        },
+        "envTypeId": {
+          "type": "string"
+        }
+      }
+    },
+    "ScenarioMetadata": {
+      "type": "object",
+      "properties": {
+        "author": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "keywords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ScenarioPackage": {
+      "type": "object",
+      "required": [
+        "id",
+        "scenarios"
+      ],
+      "properties": {
+        "objectType": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "etag": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "metadata": {
+          "type": "object"
+        },
+        "scenarios": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Scenario"
+          }
+        },
+        "user": {
+          "type": "string"
+        }
+      }
+    },
+    "ScenarioPOST": {
+      "type": "object",
+      "properties": {
+        "scenarioCode": {
+          "type": "string",
+          "description": "The code to use for the scenario"
+        },
+        "epsgCode": {
+          "type": "string"
+        },
+        "layers": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "resolution": {
+          "type": "number"
+        },
+        "units": {
+          "type": "string"
+        },
+        "metadata": {
+          "type": "object"
+        }
+      }
+    },
+    "ScenarioRef": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "metadataUrl": {
+          "type": "string"
+        }
+      }
+    },
+    "Shapegrid": {
+      "type": "object"
+    },
+    "ShapegridPOST": {
+      "type": "object",
+      "required": [
+        "name",
+        "epsg",
+        "minx",
+        "miny",
+        "maxx",
+        "maxy",
+        "resolution",
+        "cell_sides",
+        "map_units"
+      ],
+      "properties": {
+        "localId": {
+          "description": "This identifier can be used within this document to reference this \nnewly create shapegrid\n",
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "epsg": {
+          "type": "integer"
+        },
+        "minx": {
+          "type": "number"
+        },
+        "miny": {
+          "type": "number"
+        },
+        "maxx": {
+          "type": "number"
+        },
+        "maxy": {
+          "type": "number"
+        },
+        "resolution": {
+          "description": "The size of each grid cell, in \"map_units\"",
+          "type": "number"
+        },
+        "cell_sides": {
+          "description": "The number of sides for each grid cell.  Use 4 for squares and 6 for hexagons.\n",
+          "enum": [
+            4,
+            6
+          ],
+          "type": "integer"
+        },
+        "map_units": {
+          "description": "The spatial units of the shapegrid.  Cell size will be measured in this unit.\nNote that \"dd\" means decimal degrees\n",
+          "enum": [
+            "feet",
+            "inches",
+            "kilometers",
+            "meters",
+            "miles",
+            "dd",
+            "ds"
+          ],
+          "type": "string"
+        },
+        "cutout_wkt": {
+          "type": "string"
+        }
+      }
+    },
+    "SingleLayerMap": {
+      "type": "object",
+      "required": [
+        "endpoint",
+        "mapName",
+        "layerName"
+      ],
+      "properties": {
+        "endpoint": {
+          "type": "string"
+        },
+        "mapName": {
+          "type": "string"
+        },
+        "layerName": {
+          "type": "string"
+        }
+      }
+    },
+    "SolrList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/SolrPAV"
+      }
+    },
+    "SolrPAV": {
+      "type": "object",
+      "required": [
+        "compressedPAV",
+        "displayName",
+        "epsgCode",
+        "gridSetId",
+        "gridSetMetaUrl",
+        "id",
+        "pavMetaUrl",
+        "shapegridDataUrl",
+        "shapegridId",
+        "shapegridMetaUrl",
+        "squid",
+        "userId"
+      ],
+      "properties": {
+        "algorithmCode": {
+          "type": "string"
+        },
+        "algorithmParameters": {
+          "type": "string"
+        },
+        "compressedPAV": {
+          "type": "string",
+          "description": "Run-length encoded version of the PAV"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "epsgCode": {
+          "type": "integer"
+        },
+        "gridSetId": {
+          "type": "integer"
+        },
+        "gridSetMetaUrl": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "modelScenarioCode": {
+          "type": "string"
+        },
+        "modelScenarioId": {
+          "type": "integer"
+        },
+        "modelScenarioUrl": {
+          "type": "string"
+        },
+        "occurrenceDataUrl": {
+          "type": "string"
+        },
+        "occurrenceId": {
+          "type": "integer"
+        },
+        "occurrenceMetaUrl": {
+          "type": "string"
+        },
+        "pointCount": {
+          "type": "integer"
+        },
+        "pavMetaUrl": {
+          "type": "string"
+        },
+        "sdmProjDataUrl": {
+          "type": "string"
+        },
+        "sdmProjId": {
+          "type": "integer"
+        },
+        "sdmProjMetaUrl": {
+          "type": "string"
+        },
+        "sdmProjScenarioAltPredCode": {
+          "type": "string"
+        },
+        "sdmProjScenarioCode": {
+          "type": "string"
+        },
+        "sdmProjScenarioDateCode": {
+          "type": "string"
+        },
+        "sdmProjScenarioGCM": {
+          "type": "string"
+        },
+        "sdmProjScenarioId": {
+          "type": "integer"
+        },
+        "sdmProjScenarioUrl": {
+          "type": "string"
+        },
+        "shapegridDataUrl": {
+          "type": "string"
+        },
+        "shapegridId": {
+          "type": "integer"
+        },
+        "shapegridMetaUrl": {
+          "type": "string"
+        },
+        "taxonClass": {
+          "type": "string"
+        },
+        "taxonFamily": {
+          "type": "string"
+        },
+        "taxonGenus": {
+          "type": "string"
+        },
+        "taxonKingdom": {
+          "type": "string"
+        },
+        "taxonOrder": {
+          "type": "string"
+        },
+        "taxonPhylum": {
+          "type": "string"
+        },
+        "taxonSpecies": {
+          "type": "string"
+        },
+        "squid": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "Spatial": {
+      "type": "object",
+      "properties": {
+        "epsg": {
+          "type": "integer"
+        },
+        "bbox": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "mapUnits": {
+          "type": "string"
+        },
+        "resolution": {
+          "type": "number"
+        }
+      }
+    },
+    "SpatialRaster": {
+      "type": "object",
+      "properties": {
+        "epsg": {
+          "type": "integer"
+        },
+        "bbox": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "mapUnits": {
+          "type": "string"
+        },
+        "resolution": {
+          "type": "number"
+        },
+        "dataUrl": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string"
+        },
+        "gdalType": {
+          "type": "integer"
+        },
+        "dataFormat": {
+          "type": "string"
+        },
+        "minVal": {
+          "type": "number"
+        },
+        "maxVal": {
+          "type": "number"
+        },
+        "valueUnits": {
+          "type": "string"
+        },
+        "dataType": {
+          "type": "integer"
+        }
+      }
+    },
+    "SpatialVector": {
+      "type": "object",
+      "properties": {
+        "epsg": {
+          "type": "integer"
+        },
+        "bbox": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "mapUnits": {
+          "type": "string"
+        },
+        "resolution": {
+          "type": "number"
+        },
+        "dataUrl": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string"
+        },
+        "ogrType": {
+          "type": "integer"
+        },
+        "dataFormat": {
+          "type": "string"
+        },
+        "numFeatures": {
+          "type": "integer"
+        }
+      }
+    },
+    "TaxonomyList": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "canonical_name": {
+            "type": "string"
+          },
+          "scientific_name": {
+            "type": "string"
+          },
+          "squid": {
+            "type": "string"
+          },
+          "taxon_class": {
+            "type": "string"
+          },
+          "taxon_family": {
+            "type": "string"
+          },
+          "taxon_genus": {
+            "type": "string"
+          },
+          "taxon_key": {
+            "type": "string"
+          },
+          "taxon_kingdom": {
+            "type": "string"
+          },
+          "taxon_order": {
+            "type": "string"
+          },
+          "taxon_phylum": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "taxon_source_id": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "Tree": {
+      "type": "object"
+    },
+    "TreePOST": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "filename": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "parameters": {
+    "PathBioGeoId": {
+      "name": "biogeoId",
+      "in": "path",
+      "description": "The id of the biogeographic matrix to use",
+      "required": true,
+      "type": "integer"
+    },
+    "PathGridsetId": {
+      "name": "gridsetId",
+      "in": "path",
+      "description": "The id of the grid set to use",
+      "required": true,
+      "type": "integer"
+    },
+    "PathLayerId": {
+      "name": "layerId",
+      "in": "path",
+      "description": "The id of the layer to use",
+      "required": true,
+      "type": "integer"
+    },
+    "PathMatrixId": {
+      "name": "matrixId",
+      "in": "path",
+      "description": "The id of the matrix to use",
+      "required": true,
+      "type": "integer"
+    },
+    "PathMatrixColumnId": {
+      "name": "matrixColumnId",
+      "in": "path",
+      "description": "The id of the matrix column to use",
+      "required": true,
+      "type": "integer"
+    },
+    "PathOccurrenceSetId": {
+      "name": "occurrenceSetId",
+      "in": "path",
+      "description": "The id of the occurrence set to use",
+      "required": true,
+      "type": "integer"
+    },
+    "PathProjectionId": {
+      "name": "projectionId",
+      "in": "path",
+      "description": "The id of the projection",
+      "required": true,
+      "type": "integer"
+    },
+    "PathScenarioId": {
+      "name": "scenarioId",
+      "in": "path",
+      "description": "The id of the scenario",
+      "required": true,
+      "type": "integer"
+    },
+    "PathScenarioPackageId": {
+      "name": "scenarioPackageId",
+      "in": "path",
+      "description": "The id of the scenario package",
+      "required": true,
+      "type": "integer"
+    },
+    "PathShapegridId": {
+      "name": "shapegridId",
+      "in": "path",
+      "description": "The id of a shapegrid",
+      "required": true,
+      "type": "integer"
+    },
+    "PathTreeId": {
+      "name": "treeId",
+      "in": "path",
+      "description": "The id of the tree",
+      "required": true,
+      "type": "integer"
+    },
+    "AfterStatus": {
+      "name": "afterStatus",
+      "in": "query",
+      "description": "Return items with a status greater than this value",
+      "required": false,
+      "type": "integer"
+    },
+    "AfterTime": {
+      "name": "afterTime",
+      "in": "query",
+      "description": "Return experiments modified after this time",
+      "required": false,
+      "type": "string"
+    },
+    "AlgorithmCode": {
+      "name": "algorithmCode",
+      "in": "query",
+      "description": "Return experiments that were built using this algorithm",
+      "required": false,
+      "type": "string"
+    },
+    "AltPredCode": {
+      "name": "altPredCode",
+      "in": "query",
+      "description": "Alternate prediction code",
+      "required": false,
+      "type": "string"
+    },
+    "ArchiveNameReq": {
+      "name": "archiveName",
+      "in": "query",
+      "description": "The name for the new archive grid set created",
+      "required": true,
+      "type": "string"
+    },
+    "BBox": {
+      "name": "bbox",
+      "in": "query",
+      "description": "A bounding box in the form minx,miny,maxx,maxy to use for spatial queries",
+      "required": false,
+      "type": "string"
+    },
+    "BeforeStatus": {
+      "name": "beforeStatus",
+      "in": "query",
+      "description": "Return items with a status less than this value",
+      "required": false,
+      "type": "integer"
+    },
+    "BeforeTime": {
+      "name": "beforeTime",
+      "in": "query",
+      "description": "Return experiments modified before this time",
+      "required": false,
+      "type": "string"
+    },
+    "CanonicalName": {
+      "name": "canonicalName",
+      "in": "query",
+      "description": "Limit search results to those with this canonical name",
+      "type": "string"
+    },
+    "CellSides": {
+      "name": "cellSides",
+      "in": "query",
+      "description": "Count or list shapegrids that have this many sides per cell (4 - square, 6 - hexagon)",
+      "required": false,
+      "type": "integer",
+      "enum": [
+        4,
+        6
+      ]
+    },
+    "CellSize": {
+      "name": "cellSize",
+      "in": "query",
+      "description": "Count or list shapegrids that have cells of this size (in units of shapegrid)",
+      "required": false,
+      "type": "number"
+    },
+    "DateCode": {
+      "name": "dateCode",
+      "in": "query",
+      "description": "Date code",
+      "required": false,
+      "type": "string"
+    },
+    "DisplayName": {
+      "name": "displayName",
+      "in": "query",
+      "description": "Return experiments that have occurrence sets with a display name like this",
+      "required": false,
+      "type": "string"
+    },
+    "DoCalculate": {
+      "name": "doCalc",
+      "in": "query",
+      "description": "If set to 1, calculate PAM-based statistics",
+      "required": false,
+      "default": 0,
+      "type": "integer",
+      "enum": [
+        0,
+        1
+      ]
+    },
+    "DoMCPA": {
+      "name": "doMcpa",
+      "in": "query",
+      "description": "If set to 1, calculate MCPA",
+      "required": false,
+      "default": 0,
+      "type": "integer",
+      "enum": [
+        0,
+        1
+      ]
+    },
+    "EnvCode": {
+      "name": "envCode",
+      "in": "query",
+      "description": "Return items with this env code",
+      "required": false,
+      "type": "string"
+    },
+    "EPSG": {
+      "name": "epsgCode",
+      "in": "query",
+      "description": "Return experiments built using this EPSG code",
+      "required": false,
+      "type": "integer",
+      "format": "integer"
+    },
+    "GCM": {
+      "name": "gcm",
+      "in": "query",
+      "description": "General Circulation Model",
+      "required": false,
+      "type": "string",
+      "format": "string"
+    },
+    "GridsetId": {
+      "name": "gridSetId",
+      "in": "query",
+      "description": "Only return items in this grid set",
+      "required": false,
+      "type": "string"
+    },
+    "GridsetIdReq": {
+      "name": "gridSetId",
+      "in": "query",
+      "description": "Subset items from this grid set",
+      "required": true,
+      "type": "string"
+    },
+    "HasBranchLengths": {
+      "name": "hasBranchLengths",
+      "in": "query",
+      "description": "If this is 1, count or list trees with branch lengths",
+      "required": false,
+      "type": "integer",
+      "format": "int2",
+      "minimum": 0,
+      "maximum": 1,
+      "enum": [
+        0,
+        1
+      ]
+    },
+    "IsBinary": {
+      "name": "isBinary",
+      "in": "query",
+      "description": "If this is 1, count or list binary trees",
+      "required": false,
+      "type": "integer",
+      "format": "int2",
+      "minimum": 0,
+      "maximum": 1,
+      "enum": [
+        0,
+        1
+      ]
+    },
+    "IsUltrametric": {
+      "name": "isUltrametric",
+      "in": "query",
+      "description": "If this is 1, count or list ultrametric trees",
+      "required": false,
+      "type": "integer",
+      "format": "int2",
+      "minimum": 0,
+      "maximum": 1,
+      "enum": [
+        0,
+        1
+      ]
+    },
+    "Keyword": {
+      "name": "keyword",
+      "in": "query",
+      "description": "A comma-separated string of keywords",
+      "required": false,
+      "type": "string"
+    },
+    "Limit": {
+      "name": "limit",
+      "in": "query",
+      "description": "The maximum number of records to return",
+      "required": false,
+      "type": "integer",
+      "format": "integer",
+      "minimum": 1,
+      "maximum": 1000
+    },
+    "MatrixType": {
+      "name": "matrixType",
+      "in": "query",
+      "description": "Integer code of the matrix type to list or count.  \nPAM - 1, GRIM - 2, BIOGEO - 3, Rolling PAM - 10,  Padded PAM - 101, \nMCPA Output - 201\n",
+      "required": false,
+      "type": "integer",
+      "format": "int",
+      "minimum": 0,
+      "maximum": 201,
+      "enum": [
+        1,
+        2,
+        3,
+        10,
+        101,
+        201
+      ]
+    },
+    "Metadata": {
+      "name": "metadata",
+      "in": "query",
+      "description": "Additional metadata in JSON format",
+      "required": false,
+      "type": "string"
+    },
+    "MetaString": {
+      "name": "metaString",
+      "in": "query",
+      "description": "If provided, list or count trees with this meta string",
+      "required": false,
+      "type": "string"
+    },
+    "ModelScenarioCode": {
+      "name": "modelScenarioCode",
+      "in": "query",
+      "description": "Only return items built with this modeling scenario",
+      "required": false,
+      "type": "string"
+    },
+    "MinimumNumberOfPoints": {
+      "name": "minimumNumberOfPoints",
+      "in": "query",
+      "description": "Only return occurrence sets with at least this number of points",
+      "required": false,
+      "type": "integer",
+      "minimum": 0
+    },
+    "NumberOfPermutations": {
+      "name": "numPermutations",
+      "in": "query",
+      "description": "Perform this many permutation tests when running MCPA",
+      "required": false,
+      "default": 500,
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10000
+    },
+    "OccurrenceSetId": {
+      "name": "occurrenceSetId",
+      "in": "query",
+      "description": "Return experiments built using this occurrence set",
+      "required": false,
+      "type": "integer",
+      "format": "integer"
+    },
+    "Offset": {
+      "name": "offset",
+      "in": "query",
+      "description": "A number of records to skip before beginning return",
+      "required": false,
+      "type": "integer",
+      "format": "integer",
+      "minimum": 0
+    },
+    "PointMax": {
+      "name": "pointMax",
+      "in": "query",
+      "description": "Only return PAVs build from occurrence sets with less than or this many points",
+      "required": false,
+      "type": "integer"
+    },
+    "PointMin": {
+      "name": "pointMin",
+      "in": "query",
+      "description": "Only return PAVs build from occurrence sets with at least this many points",
+      "required": false,
+      "type": "integer"
+    },
+    "ProjectScenarioCode": {
+      "name": "projectionScenarioCode",
+      "in": "query",
+      "description": "Only return items built with this SDM projection scenario",
+      "required": false,
+      "type": "string"
+    },
+    "ScenarioCode": {
+      "name": "scenarioCode",
+      "in": "query",
+      "description": "Return objects thatare in or used this scenario",
+      "required": false,
+      "type": "string"
+    },
+    "ScenarioId": {
+      "name": "scenarioId",
+      "in": "query",
+      "description": "Return objects thatare in or used this scenario",
+      "required": false,
+      "type": "integer",
+      "minimum": 0
+    },
+    "ScientificName": {
+      "name": "scientificName",
+      "in": "query",
+      "description": "Limit search results to those with this scientific name",
+      "type": "string"
+    },
+    "ShapegridId": {
+      "name": "shapegridId",
+      "in": "query",
+      "description": "The id of a shapegrid to use for query",
+      "required": false,
+      "type": "integer"
+    },
+    "Squid": {
+      "name": "squid",
+      "in": "query",
+      "description": "Return items with this squid",
+      "required": false,
+      "type": "string"
+    },
+    "Status": {
+      "name": "status",
+      "in": "query",
+      "description": "If provided, only return items with the status indicated (see before and after status)",
+      "required": false,
+      "type": "integer",
+      "format": "integer"
+    },
+    "TaxonClass": {
+      "name": "taxonClass",
+      "in": "query",
+      "description": "Limit the Global PAM results to only those in this class",
+      "required": false,
+      "type": "string"
+    },
+    "TaxonFamily": {
+      "name": "taxonFamily",
+      "in": "query",
+      "description": "Limit the search results to only those in this family",
+      "required": false,
+      "type": "string"
+    },
+    "TaxonGenus": {
+      "name": "taxonGenus",
+      "in": "query",
+      "description": "Limit the search results to only those in this genus",
+      "required": false,
+      "type": "string"
+    },
+    "TaxonKey": {
+      "name": "taxonKey",
+      "in": "query",
+      "description": "Limit the search results to only those with this taxon key",
+      "required": false,
+      "type": "string"
+    },
+    "TaxonKingdom": {
+      "name": "taxonKingdom",
+      "in": "query",
+      "description": "Limit the search results to only those in this kingdom",
+      "required": false,
+      "type": "string"
+    },
+    "TaxonOrder": {
+      "name": "taxonOrder",
+      "in": "query",
+      "description": "Limit the search results to only those in this order",
+      "required": false,
+      "type": "string"
+    },
+    "TaxonPhylum": {
+      "name": "taxonPhylum",
+      "in": "query",
+      "description": "Limit the search results to only those in this phylum",
+      "required": false,
+      "type": "string"
+    },
+    "TaxonSpecies": {
+      "name": "taxonSpecies",
+      "in": "query",
+      "description": "Limit the search results to only those with this species name \n(without genus)\n",
+      "required": false,
+      "type": "string"
+    },
+    "TreeName": {
+      "name": "treeName",
+      "in": "query",
+      "description": "If provided, return or count trees with this name",
+      "required": false,
+      "type": "string"
+    },
+    "UrlUser": {
+      "name": "user",
+      "in": "query",
+      "description": "If this is 'public' return public objects, if it is 'anon', return anonymous objects, else return user objects",
+      "required": false,
+      "type": "string"
+    }
+  }
+}

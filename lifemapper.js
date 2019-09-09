@@ -40,7 +40,7 @@ var lifemapper = sage2_webview_appCoreV01_extendWebview({
 		this.resizeEvents = "continuous"; // Recommended not to change. Options: never, continuous, onfinish
 
 		// Path / URL of the page you want to show
-		this.changeURL(this.resrcPath + "/webpage/index.html", false);
+		this.changeURL(this.resrcPath + "/webapp/index.html", false);
 	},
 	load: function(date) {
 		// OPTIONAL

@@ -1,0 +1,293 @@
+var squidLookup =
+[
+   {
+      "scientific_name": "Mitella_breweri", 
+      "header": "5251f370458cd8c372bf87ba25b528204b3df288a901b14c3cdf7f19eb53a440", 
+      "index": 0
+   }, 
+   {
+      "scientific_name": "Heuchera_missouriensis", 
+      "header": "6d287b685bdc6860feee42ed9098a3d52e21a77fd42ec66234808416bfa4c904", 
+      "index": 1
+   }, 
+   {
+      "scientific_name": "Heuchera_pubescens", 
+      "header": "15e13e06f12d9a172caf096c97304aac19aa47959032530a33b678fcd966b882", 
+      "index": 2
+   }, 
+   {
+      "scientific_name": "Peltoboykinia_tellimoides", 
+      "header": "6b523b79ee8e29993080c1be2866708befb98267e94ea1771c3ea3378fc567bb", 
+      "index": 3
+   }, 
+   {
+      "scientific_name": "Mitella_nuda", 
+      "header": "b5793f60fbb0285a24863984fbf9e01df26955dfc9461178364f7028d560aa65", 
+      "index": 4
+   }, 
+   {
+      "scientific_name": "Mitella_stauropetala", 
+      "header": "770722861bfb77c266445ddf42d47dd5a0be571ab865ee93e2b33108621c691a", 
+      "index": 5
+   }, 
+   {
+      "scientific_name": "Mitella_caulescens", 
+      "header": "41285ac32d16f970a97c17aeb4d83e70944fd3f2f08790dfd8beb21ed8804f33", 
+      "index": 6
+   }, 
+   {
+      "scientific_name": "menziesii", 
+      "header": "d8122a4b612c139ee9c70527ea21ca34dbf61a540c609cbf8c7631b612d534e2", 
+      "index": 7
+   }, 
+   {
+      "scientific_name": "Mitella_pauciflora", 
+      "header": "09f069cb46813fa69745ebd6fd4d6db0fd415df23b89eba2567f47465d3c675b", 
+      "index": 8
+   }, 
+   {
+      "scientific_name": "Telesonix_jamesii", 
+      "header": "fb97f51ca70dc34f22fe5b9b9395d5d2f33764b2bc17b90bb52c3420bd8bb5b6", 
+      "index": 9
+   }, 
+   {
+      "scientific_name": "Mitella_furusei", 
+      "header": "d34a577c98a63bae0e54f29c8b6b611901e8d3c62ad13b619fc09baf6c033e32", 
+      "index": 10
+   }, 
+   {
+      "scientific_name": "Mitella_japonica", 
+      "header": "b30dfc3bc98dd0e8d1597b15089bb180d7703dcc4fc41c2ac5d2b0112e5f82cd", 
+      "index": 11
+   }, 
+   {
+      "scientific_name": "Tiarella_polyphylla", 
+      "header": "979cded1b235373c6d30bb43c068a580b5e087f8aedb183309142535093fb091", 
+      "index": 12
+   }, 
+   {
+      "scientific_name": "Tellima_grandiflora", 
+      "header": "d559ed90a181876d4e7e469e43fc51a73b9a78467233b717ee2637f09211d31b", 
+      "index": 13
+   }, 
+   {
+      "scientific_name": "Lithophragma_parviflorum", 
+      "header": "4a34981c4e3f0f7e78f170c24df8e11ca76fd95df3bae72e1042d66bbb7cce98", 
+      "index": 14
+   }, 
+   {
+      "scientific_name": "Mitella_diphylla", 
+      "header": "f57f0e1757ae3e0a2da3c8e4a4cc347bab9e044274ef1714516e3bf1da2db186", 
+      "index": 15
+   }, 
+   {
+      "scientific_name": "Heuchera_versicolor", 
+      "header": "d223552b69f1eb716bd080ce30576d42a47d3a62924156fcb7e10f1c43f8536a", 
+      "index": 16
+   }, 
+   {
+      "scientific_name": "Heuchera_villosa", 
+      "header": "16604f04473b3d670ae24b60d9594929679cfe2bb8a09e8845337f76181e35d9", 
+      "index": 17
+   }, 
+   {
+      "scientific_name": "Mitella_ovalis", 
+      "header": "258a047004441fc08fdae0f7656a5ee9f02703b102402ba3090bcc780983203d", 
+      "index": 18
+   }, 
+   {
+      "scientific_name": "Mitella_stylosa", 
+      "header": "2d2e2f50e9fd80c38735e38d1483645c0a57763d4acfdde0dff8b7b6eb108ea9", 
+      "index": 19
+   }, 
+   {
+      "scientific_name": "diplomenziesii", 
+      "header": "513d7a90204c5c1117723034e6b55e93c84eb1aa81f292e5d1dc7931d226e7de", 
+      "index": 20
+   }, 
+   {
+      "scientific_name": "Mitella_pentandra", 
+      "header": "9d241d7109eb9f9d5c9a4435754096bb729993bdae89809183959df4ab728619", 
+      "index": 21
+   }, 
+   {
+      "scientific_name": "Heuchera_richardsonii", 
+      "header": "42c09b4822c360dcf73b974a71aaa3fdff0ee271c7577425a5d309660dfe617d", 
+      "index": 22
+   }, 
+   {
+      "scientific_name": "Heuchera_parvifolia", 
+      "header": "86915ccebfd160072d9b80ddd43a53789a8f45c2abaf45d96a2e7cc5a5d67ea6", 
+      "index": 23
+   }, 
+   {
+      "scientific_name": "Heuchera_rubescens", 
+      "header": "ef3f0ef45c2faedfabbfaf2961b62e8a91170ff13e4055d4eb06b7a25010f04b", 
+      "index": 24
+   }, 
+   {
+      "scientific_name": "Heuchera_sanguinea", 
+      "header": "70b7cf8f2d7804c2cdb86bed383a6a83aa99b5157704886d2bf27f62bea113b4", 
+      "index": 25
+   }, 
+   {
+      "scientific_name": "Heuchera_pilosissima", 
+      "header": "de2cff7ec0fa1cae8fa548276163a72c73cf79bf2531c8e18e6edae3a6e3811b", 
+      "index": 26
+   }, 
+   {
+      "scientific_name": "Heuchera_parviflora", 
+      "header": "d31357c71f9e720828296d3ca39834fba56e90199787d8b64cb26f828a85cd4a", 
+      "index": 27
+   }, 
+   {
+      "scientific_name": "Heuchera_puberula", 
+      "header": "d4cae5c673abdfe151393ef467c7a5c7acb4d73b4f5dc67ebca8b1daa4e3f5b5", 
+      "index": 28
+   }, 
+   {
+      "scientific_name": "Heuchera_soltisii", 
+      "header": "4e853acd4c3d5004452e736c1688d8a4244d02944731cf79ee05a15467706b6d", 
+      "index": 29
+   }, 
+   {
+      "scientific_name": "Heuchera_micrantha", 
+      "header": "f418578201fe096c61a10266caedabf296888208887da8ec27a10997f9b1af92", 
+      "index": 30
+   }, 
+   {
+      "scientific_name": "Heuchera_mexicana", 
+      "header": "e944424effd90d2eae9f007102143f9f7c223b6bbd060e55312196997fda6914", 
+      "index": 31
+   }, 
+   {
+      "scientific_name": "Heuchera_grossulariifolia", 
+      "header": "e4bcd67d875d616eef0a9ea1dee4c5029ce993c4e966f93bb195cdc8bcb58768", 
+      "index": 32
+   }, 
+   {
+      "scientific_name": "Heuchera_longipetala", 
+      "header": "798f793b242941fceef8ed0e33d3aa985b80811ce5eec05f78c3c8ff004281ab", 
+      "index": 33
+   }, 
+   {
+      "scientific_name": "Heuchera_longiflora", 
+      "header": "826d80e1a3e3aacdb5811b7c18e46a1fe54ecdb99bbbb57eb984964c283bd03d", 
+      "index": 34
+   }, 
+   {
+      "scientific_name": "Heuchera_novomexicana", 
+      "header": "8aafdd0d0b9d7f6251a6131c4062262bbcc121f0aba9a38931dea24f652e246e", 
+      "index": 35
+   }, 
+   {
+      "scientific_name": "Heuchera_merriamii", 
+      "header": "f83f79b3cb016bcb224ae956e667020adc1e9716511fc06a1b6e0cb2dbf668b0", 
+      "index": 36
+   }, 
+   {
+      "scientific_name": "Heuchera_hallii", 
+      "header": "b668699d5399c989f43cba46d1e314a815b3c54bc63df2a9255a17323cc2dbf7", 
+      "index": 37
+   }, 
+   {
+      "scientific_name": "Heuchera_hirsutissima", 
+      "header": "fe573e8e67f071c6304511a9d97e0535a81b08f3a6ba67a9478bac7f1ad6d9c8", 
+      "index": 38
+   }, 
+   {
+      "scientific_name": "Heuchera_glabra", 
+      "header": "4b67dbf4141cf4f4f491568bc0b38375b635be7fb5f0c698519d78fe087dbada", 
+      "index": 39
+   }, 
+   {
+      "scientific_name": "Heuchera_cylindrica", 
+      "header": "a2ab5d4d6bff1e7e795c6d040210a5c66d076ac3653473bb0306d3d6ac6a88f7", 
+      "index": 40
+   }, 
+   {
+      "scientific_name": "Heuchera_chlorantha", 
+      "header": "48becd0c7c93fef82620bfa2ce8c2ee0d11295a9ab57ec1a2adacddc29d03551", 
+      "index": 41
+   }, 
+   {
+      "scientific_name": "Heuchera_glomerulata", 
+      "header": "3423acf613feab03812cb523a6a224ea2417435f3f4fbdc81141db1728286106", 
+      "index": 42
+   }, 
+   {
+      "scientific_name": "Heuchera_eastwoodiae", 
+      "header": "7cb6acad5979c9365a740fbef8b6f1b2dc8f8c70303ceb39f32622b96fba057b", 
+      "index": 43
+   }, 
+   {
+      "scientific_name": "Heuchera_caroliniana", 
+      "header": "668e590a0386a2a6ecae28ddb3e5fa0dbecca1be393ce094df09c0c15b16d0c3", 
+      "index": 44
+   }, 
+   {
+      "scientific_name": "Heuchera_elegans", 
+      "header": "8238364a06d8159bf8c99b1dfb173c33f58045caf15b0ea8c797c52c4bc983d9", 
+      "index": 45
+   }, 
+   {
+      "scientific_name": "Heuchera_brevistaminea", 
+      "header": "866beb5d0d01dd76590fcc0ab7b431beeaeae4b5c192489cc16279cef2c95891", 
+      "index": 46
+   }, 
+   {
+      "scientific_name": "Heuchera_caespitosa", 
+      "header": "52522fa0636e5c0c8fd49aad5511e51cd6a47279a473d61b0d2dabcb18d751fe", 
+      "index": 47
+   }, 
+   {
+      "scientific_name": "Heuchera_wootonii", 
+      "header": "81a04e1c0fa2dd59eee2f339b73fa3a13c97f5aa7ed7b17fdcd3f421c9c4e831", 
+      "index": 48
+   }, 
+   {
+      "scientific_name": "Heuchera_parishii", 
+      "header": "e087c8c14c2d9e654fcec9f8ed498afaecba57dff50b8fc34fbca64dda403122", 
+      "index": 49
+   }, 
+   {
+      "scientific_name": "Heuchera_bracteata", 
+      "header": "9f9351a061febeea05cc486ac7a586b4f0a17104cba22e624057147c29f11642", 
+      "index": 50
+   }, 
+   {
+      "scientific_name": "Heuchera_americana", 
+      "header": "a36a659f9081e133181ca4078f5b3e8d0729e310038bda6b2164fe81a6679b3a", 
+      "index": 51
+   }, 
+   {
+      "scientific_name": "Heuchera_alba", 
+      "header": "527e3b5de28ff643b1a8ece32fb4e828389f052a0eb3b304a9d698e5d3a0e858", 
+      "index": 52
+   }, 
+   {
+      "scientific_name": "Heuchera_acutifolia", 
+      "header": "a48372462a6b99b2ea4ea8bbffbdf14904ed3a938c73cc3fde27f1f93a1ed2d6", 
+      "index": 53
+   }, 
+   {
+      "scientific_name": "Heuchera_abramsii", 
+      "header": "351f86d8a6a7573aa2b70708c7c32a0f3af10b801dd5e3bc74c7f942df429761", 
+      "index": 54
+   }, 
+   {
+      "scientific_name": "Elmera_racemosa", 
+      "header": "18bdb0eaa130fcbc91b8e497cc4d352ad2d9735ec390cfc5e0d7e895f2acaee4", 
+      "index": 55
+   }, 
+   {
+      "scientific_name": "Conimitella_williamsii", 
+      "header": "227a6a4cc0238a2da8552d36057c20a28dc63c913d0ee766753cb0207039d682", 
+      "index": 56
+   }, 
+   {
+      "scientific_name": "Bensoniella_oregona", 
+      "header": "1a58bdce59f244bbb1069d04452e92137f591a5bd63f0a800623ebc1c5e9ec7d", 
+      "index": 57
+   }
+]

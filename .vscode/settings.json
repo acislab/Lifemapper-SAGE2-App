@@ -1,0 +1,6 @@
+{
+    "elm.analyseEnabled": true,
+    "elm.includeUserFunctionDocumentation": true,
+    "elm.includeParamsInUserAutocomplete": true,
+    "elm.useWorkSpaceRootForElmRoot": false
+}
