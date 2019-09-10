@@ -25,7 +25,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 // Elm init
 var node = document.getElementById("app");
-while(node.firstChild) { node.removeChild(node.firstChild);}
+while(node.firstChild) { node.removeChild(node.firstChild); y}
 
 // TODO: get mcpaMatrix and taxonTree from lifemapper.js
 
@@ -34,14 +34,5 @@ var app = Elm.TreeView.embed(node, {
     taxonTree: taxonTree
 });
 
-/* // TODO: do we need this?
-app.ports.statsForSites.send({
-    sitesObserved: sitesObserved.features.map(function(feature) {
-        return {id: feature.id, stats: Object.entries(feature.properties)};
-    }),
-    statNameLookup: Object.entries(statNameLookup)
-});
-*/
-
 // SAGE2 init
-SAGE2_AppState.titleUpdate("Lifemapper Tree");
+SAGE2_AppState.titleUpdate("Occurrence Map");
