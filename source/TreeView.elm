@@ -22,10 +22,11 @@
 -}
 
 
-port module StatsTreeMap exposing (..)
+port module TreeView exposing (..)
 
 import Html
 import Html.Attributes as A
+import Json.Encode as E
 import Dict
 import Set
 import McpaModel
@@ -170,8 +171,8 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     [ McpaModel.subscriptions model.mcpaModel |> Sub.map McpaMsg
     , StatsMain.subscriptions model.statsModel |> Sub.map StatsMsg
-    , sitesForNode SetSelectedSites
-    , nodesForSites SetSelectedNodes
+    , sitesForNode SetSelectedSites -- TODO: remove?
+    , nodesForSites SetSelectedNodes -- TODO: remove?
     ]
         |> Sub.batch
 

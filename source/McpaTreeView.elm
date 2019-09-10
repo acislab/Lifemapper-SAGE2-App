@@ -123,9 +123,9 @@ viewTree model redBlue selectData =
     in
         Html.div
             [ A.style [ ( "display", "flex" ), ( "flex-direction", "column" ) ] ]
-            [ Html.h3 [ A.style [ ( "text-align", "center" ) ] ]
+            [ {--Html.h3 [ A.style [ ( "text-align", "center" ) ] ]
                 [ Html.text "Phylogenetic Tree" ]
-            , Html.div
+            ,--} Html.div
                 [ A.style
                     [ ( "display", "flex" )
                     , ( "justify-content", "space-between" )
@@ -145,11 +145,11 @@ viewTree model redBlue selectData =
                     -- (clickBox :: treeSvg)
                     (gradDefs :: treeSvg)
                 ]
-            , Html.p [ A.style [ ( "width", "560px" ) ] ]
+            {--, Html.p [ A.style [ ( "width", "560px" ) ] ]
                 [ Html.text <|
                     "Node color indicates correlation between sister clades and "
                         ++ "the selected predictor.  Selecting a node highlights aggregated "
                         ++ "presence of species of one clade in blue and the other in red.  "
                         ++ "Sites where species of both sides are present are purple."
-                ]
+                ]--}
             ]

@@ -25,11 +25,11 @@ var lifemapper = sage2_webview_appCoreV01_extendWebview({
 		enableUiContextMenuEntries: {
 			navigateBack:       false, // alt left-arrow
 			navigateForward:    false, // alt right-arrow
-			reload:             true, // alt r
+			reload:             false, // alt r
 			autoRefresh:        false, // must be selected from UI context menu
 			consoleViewToggle:  false, // must be selected from UI context menu
-			zoomIn:             true, // alt up-arrow
-			zoomOut:            true, // alt down-arrow
+			zoomIn:             false, // alt up-arrow
+			zoomOut:            false, // alt down-arrow
 			urlTyping:          false, // must be typed from UI context menu
 			copyUrlToClipboard: false, // must be typed from UI context menu
 		},
@@ -40,7 +40,26 @@ var lifemapper = sage2_webview_appCoreV01_extendWebview({
 		this.resizeEvents = "continuous"; // Recommended not to change. Options: never, continuous, onfinish
 
 		// Path / URL of the page you want to show
-		this.changeURL(this.resrcPath + "/webapp/index.html", false);
+		if (data.customLaunchParams) {
+			console.log(data.customLaunchParams);
+			switch (data.customLaunchParams.view) {
+				case "tree":
+					console.log("Launching Lifemapper app as \"tree\"")
+					this.sendResize(688, 1400)
+					this.changeURL(this.resrcPath + "/webapp/treeView.html", false);
+					break;
+				default:
+					console.log("Launching Lifemapper app with no parameters")
+					this.sendResize(560, 128)
+					this.changeURL(this.resrcPath + "/webapp/packageView.html", false);
+					break;
+			}
+		}
+		else {
+			console.log("Launching Lifemapper app with no parameters")
+			this.sendResize(560, 128)
+			this.changeURL(this.resrcPath + "/webapp/packageView.html", false);
+		}
 	},
 	load: function(date) {
 		// OPTIONAL
@@ -60,7 +79,7 @@ var lifemapper = sage2_webview_appCoreV01_extendWebview({
 	getContextEntries: function() {
 		// OPTIONAL
 		// This can be used to allow UI interaction to your webpage
-		// Entires are added after entries of enableUiContextMenuEntries 
+		// Entries are added after entries of enableUiContextMenuEntries 
 		var entries = [];
 		// entries.push({
 		// 	description: "This text is seen in the UI",
@@ -70,7 +89,9 @@ var lifemapper = sage2_webview_appCoreV01_extendWebview({
 		// 	// Each of the parameter properties will be in that object
 		// 	// Some properties are reserved and may be automatically filled in.
 		// });
-		entries.push({
+		
+		// TODO: remove these (keeping for now as reference)
+		/*entries.push({
 			description: "Set Counter value",
 			callback: "setCounterValueInPage", // function defined below
 			inputField: true, // Takes typed input from UI
@@ -81,14 +102,46 @@ var lifemapper = sage2_webview_appCoreV01_extendWebview({
 			description: "Force state update",
 			callback: "giveContainerStateToWebpage", // function defined below
 			parameters: {},
+		});*/
+
+		entries.push({
+			description: "Open a phylogenetic tree",
+			callback: "openTreeCallback", // function defined below
+			parameters: {},
 		});
 		return entries;
 	},
+
+	/**
+	 * Change the title of the window // Why isn't this working?
+	 *
+	 * @method     changeWebviewTitle
+	 * @param newTitle {String} new title
+	 */
+	/*changeWebviewTitle: function(newTitle) {
+		console.log("Changing title to" + newTitle)
+		this.updateTitle(newTitle + " AROO?");
+	},*/
 
 	// ----------------------------------------------------------------------------------------------------
 	// ----------------------------------------------------------------------------------------------------
 	// ----------------------------------------------------------------------------------------------------
 	// Add optional functions
+
+	openTreeCallback: function() {
+		console.log("Opening phylogenetic tree app")
+		this.launchAppWithValues("Lifemapper-SAGE2-App", { view : "tree" })
+	},
+
+	askParent: function(func, data) {
+		data._sender = this.id; // Provide an address for the parent to reply to
+		this.sendDataToParentApp(func, data);
+	},
+
+	getModel: function(data) {
+		if (data._sender)
+			applications[data._sender]
+	},
 
 	setCounterValueInPage: function(responseObject) { // Handles the UI context menu entry
 		this.callFunctionInWebpage("setCounterValue", responseObject.clientInput);

@@ -195,7 +195,7 @@ var sage2_webview_appCoreV01 = SAGE2_App.extend({
 		});
 
 
-		this[this.swac_userAddPrefix + "init"](); // call user provided init() if available
+		this[this.swac_userAddPrefix + "init"](data); // call user provided init() if available
 	},
 
 	isElectron: function() {

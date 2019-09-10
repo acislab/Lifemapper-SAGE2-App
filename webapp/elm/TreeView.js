@@ -13981,8 +13981,8 @@ var _user$project$McpaModel$init = F2(
 				return _elm_lang$core$Native_Utils.crashCase(
 					'McpaModel',
 					{
-						start: {line: 64, column: 13},
-						end: {line: 69, column: 76}
+						start: {line: 66, column: 13},
+						end: {line: 71, column: 76}
 					},
 					_p1)(
 					A2(_elm_lang$core$Basics_ops['++'], 'failed parsing Nexus tree data: ', _p1._0));
@@ -14323,140 +14323,120 @@ var _user$project$McpaTreeView$viewTree = F3(
 			{
 				ctor: '::',
 				_0: A2(
-					_elm_lang$html$Html$h3,
+					_elm_lang$html$Html$div,
 					{
 						ctor: '::',
 						_0: _elm_lang$html$Html_Attributes$style(
 							{
 								ctor: '::',
-								_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
-								_1: {ctor: '[]'}
+								_0: {ctor: '_Tuple2', _0: 'display', _1: 'flex'},
+								_1: {
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'justify-content', _1: 'space-between'},
+									_1: {
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: 'flex-shrink', _1: '0'},
+										_1: {ctor: '[]'}
+									}
+								}
 							}),
 						_1: {ctor: '[]'}
 					},
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html$text('Phylogenetic Tree'),
-						_1: {ctor: '[]'}
+						_0: variableSelector,
+						_1: {
+							ctor: '::',
+							_0: toggleBranchLengths,
+							_1: {ctor: '[]'}
+						}
 					}),
 				_1: {
 					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$div,
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$style(
-								{
-									ctor: '::',
-									_0: {ctor: '_Tuple2', _0: 'display', _1: 'flex'},
-									_1: {
-										ctor: '::',
-										_0: {ctor: '_Tuple2', _0: 'justify-content', _1: 'space-between'},
-										_1: {
-											ctor: '::',
-											_0: {ctor: '_Tuple2', _0: 'flex-shrink', _1: '0'},
-											_1: {ctor: '[]'}
-										}
-									}
-								}),
-							_1: {ctor: '[]'}
-						},
-						{
-							ctor: '::',
-							_0: variableSelector,
-							_1: {
-								ctor: '::',
-								_0: toggleBranchLengths,
-								_1: {ctor: '[]'}
-							}
-						}),
+					_0: legend,
 					_1: {
 						ctor: '::',
-						_0: legend,
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$style(
+									{
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: 'margin-bottom', _1: '20px'},
+										_1: {
+											ctor: '::',
+											_0: {ctor: '_Tuple2', _0: 'overflow-y', _1: 'auto'},
+											_1: {ctor: '[]'}
+										}
+									}),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: A2(
+									_elm_lang$svg$Svg$svg,
+									{
+										ctor: '::',
+										_0: _elm_lang$svg$Svg_Attributes$width('560'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$svg$Svg_Attributes$height(
+												_elm_lang$core$Basics$toString(14 * treeHeight)),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$svg$Svg_Attributes$viewBox(
+													A2(
+														_elm_lang$core$Basics_ops['++'],
+														'0 0 40 ',
+														_elm_lang$core$Basics$toString(treeHeight))),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$style(
+														{
+															ctor: '::',
+															_0: {ctor: '_Tuple2', _0: 'background', _1: '#000'},
+															_1: {
+																ctor: '::',
+																_0: {ctor: '_Tuple2', _0: 'font-family', _1: 'sans-serif'},
+																_1: {ctor: '[]'}
+															}
+														}),
+													_1: {ctor: '[]'}
+												}
+											}
+										}
+									},
+									{ctor: '::', _0: gradDefs, _1: treeSvg}),
+								_1: {ctor: '[]'}
+							}),
 						_1: {
 							ctor: '::',
 							_0: A2(
-								_elm_lang$html$Html$div,
+								_elm_lang$html$Html$p,
 								{
 									ctor: '::',
 									_0: _elm_lang$html$Html_Attributes$style(
 										{
 											ctor: '::',
-											_0: {ctor: '_Tuple2', _0: 'margin-bottom', _1: '20px'},
-											_1: {
-												ctor: '::',
-												_0: {ctor: '_Tuple2', _0: 'overflow-y', _1: 'auto'},
-												_1: {ctor: '[]'}
-											}
+											_0: {ctor: '_Tuple2', _0: 'width', _1: '560px'},
+											_1: {ctor: '[]'}
 										}),
 									_1: {ctor: '[]'}
 								},
 								{
 									ctor: '::',
-									_0: A2(
-										_elm_lang$svg$Svg$svg,
-										{
-											ctor: '::',
-											_0: _elm_lang$svg$Svg_Attributes$width('560'),
-											_1: {
-												ctor: '::',
-												_0: _elm_lang$svg$Svg_Attributes$height(
-													_elm_lang$core$Basics$toString(14 * treeHeight)),
-												_1: {
-													ctor: '::',
-													_0: _elm_lang$svg$Svg_Attributes$viewBox(
-														A2(
-															_elm_lang$core$Basics_ops['++'],
-															'0 0 40 ',
-															_elm_lang$core$Basics$toString(treeHeight))),
-													_1: {
-														ctor: '::',
-														_0: _elm_lang$html$Html_Attributes$style(
-															{
-																ctor: '::',
-																_0: {ctor: '_Tuple2', _0: 'background', _1: '#000'},
-																_1: {
-																	ctor: '::',
-																	_0: {ctor: '_Tuple2', _0: 'font-family', _1: 'sans-serif'},
-																	_1: {ctor: '[]'}
-																}
-															}),
-														_1: {ctor: '[]'}
-													}
-												}
-											}
-										},
-										{ctor: '::', _0: gradDefs, _1: treeSvg}),
-									_1: {ctor: '[]'}
-								}),
-							_1: {
-								ctor: '::',
-								_0: A2(
-									_elm_lang$html$Html$p,
-									{
-										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$style(
-											{
-												ctor: '::',
-												_0: {ctor: '_Tuple2', _0: 'width', _1: '560px'},
-												_1: {ctor: '[]'}
-											}),
-										_1: {ctor: '[]'}
-									},
-									{
-										ctor: '::',
-										_0: _elm_lang$html$Html$text(
+									_0: _elm_lang$html$Html$text(
+										A2(
+											_elm_lang$core$Basics_ops['++'],
+											'Node color indicates correlation between sister clades and ',
 											A2(
 												_elm_lang$core$Basics_ops['++'],
-												'Node color indicates correlation between sister clades and ',
-												A2(
-													_elm_lang$core$Basics_ops['++'],
-													'the selected predictor.  Selecting a node highlights aggregated ',
-													A2(_elm_lang$core$Basics_ops['++'], 'presence of species of one clade in blue and the other in red.  ', 'Sites where species of both sides are present are purple.')))),
-										_1: {ctor: '[]'}
-									}),
-								_1: {ctor: '[]'}
-							}
+												'the selected predictor.  Selecting a node highlights aggregated ',
+												A2(_elm_lang$core$Basics_ops['++'], 'presence of species of one clade in blue and the other in red.  ', 'Sites where species of both sides are present are purple.')))),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
 						}
 					}
 				}
@@ -15888,27 +15868,27 @@ var _user$project$StatsMain$subscriptions = _elm_lang$core$Basics$always(
 var _user$project$StatsMain$main = _elm_lang$html$Html$program(
 	{init: _user$project$StatsMain$init, update: _user$project$StatsMain$update, view: _user$project$StatsMain$view, subscriptions: _user$project$StatsMain$subscriptions})();
 
-var _user$project$StatsTreeMap$parseData = function (data) {
+var _user$project$TreeView$parseData = function (data) {
 	var _p0 = _user$project$ParseMcpa$parseMcpa(data);
 	if (_p0.ctor === 'Ok') {
 		return _p0._0;
 	} else {
 		return _elm_lang$core$Native_Utils.crashCase(
-			'StatsTreeMap',
+			'TreeView',
 			{
-				start: {line: 124, column: 5},
-				end: {line: 129, column: 66}
+				start: {line: 125, column: 5},
+				end: {line: 130, column: 66}
 			},
 			_p0)(
 			A2(_elm_lang$core$Basics_ops['++'], 'failed to decode MCPA matrix: ', _p0._0));
 	}
 };
-var _user$project$StatsTreeMap$requestSitesForNode = _elm_lang$core$Native_Platform.outgoingPort(
+var _user$project$TreeView$requestSitesForNode = _elm_lang$core$Native_Platform.outgoingPort(
 	'requestSitesForNode',
 	function (v) {
 		return v;
 	});
-var _user$project$StatsTreeMap$sitesForNode = _elm_lang$core$Native_Platform.incomingPort(
+var _user$project$TreeView$sitesForNode = _elm_lang$core$Native_Platform.incomingPort(
 	'sitesForNode',
 	_elm_lang$core$Json_Decode$list(
 		A2(
@@ -15923,7 +15903,7 @@ var _user$project$StatsTreeMap$sitesForNode = _elm_lang$core$Native_Platform.inc
 					A2(_elm_lang$core$Json_Decode$index, 1, _elm_lang$core$Json_Decode$string));
 			},
 			A2(_elm_lang$core$Json_Decode$index, 0, _elm_lang$core$Json_Decode$int))));
-var _user$project$StatsTreeMap$requestNodesForSites = _elm_lang$core$Native_Platform.outgoingPort(
+var _user$project$TreeView$requestNodesForSites = _elm_lang$core$Native_Platform.outgoingPort(
 	'requestNodesForSites',
 	function (v) {
 		return _elm_lang$core$Native_List.toArray(v).map(
@@ -15931,7 +15911,7 @@ var _user$project$StatsTreeMap$requestNodesForSites = _elm_lang$core$Native_Plat
 				return v;
 			});
 	});
-var _user$project$StatsTreeMap$nodesForSites = _elm_lang$core$Native_Platform.incomingPort(
+var _user$project$TreeView$nodesForSites = _elm_lang$core$Native_Platform.incomingPort(
 	'nodesForSites',
 	A2(
 		_elm_lang$core$Json_Decode$andThen,
@@ -15951,23 +15931,23 @@ var _user$project$StatsTreeMap$nodesForSites = _elm_lang$core$Native_Platform.in
 			_elm_lang$core$Json_Decode$index,
 			0,
 			_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$int))));
-var _user$project$StatsTreeMap$Model = F2(
+var _user$project$TreeView$Model = F2(
 	function (a, b) {
 		return {mcpaModel: a, statsModel: b};
 	});
-var _user$project$StatsTreeMap$SetSelectedNodes = function (a) {
+var _user$project$TreeView$SetSelectedNodes = function (a) {
 	return {ctor: 'SetSelectedNodes', _0: a};
 };
-var _user$project$StatsTreeMap$SetSelectedSites = function (a) {
+var _user$project$TreeView$SetSelectedSites = function (a) {
 	return {ctor: 'SetSelectedSites', _0: a};
 };
-var _user$project$StatsTreeMap$StatsMsg = function (a) {
+var _user$project$TreeView$StatsMsg = function (a) {
 	return {ctor: 'StatsMsg', _0: a};
 };
-var _user$project$StatsTreeMap$McpaMsg = function (a) {
+var _user$project$TreeView$McpaMsg = function (a) {
 	return {ctor: 'McpaMsg', _0: a};
 };
-var _user$project$StatsTreeMap$update = F2(
+var _user$project$TreeView$update = F2(
 	function (msg, _p2) {
 		var _p3 = _p2;
 		var _p12 = _p3;
@@ -16044,10 +16024,10 @@ var _user$project$StatsTreeMap$update = F2(
 							}),
 						{
 							ctor: '::',
-							_0: A2(_elm_lang$core$Platform_Cmd$map, _user$project$StatsTreeMap$McpaMsg, cmd),
+							_0: A2(_elm_lang$core$Platform_Cmd$map, _user$project$TreeView$McpaMsg, cmd),
 							_1: {
 								ctor: '::',
-								_0: _user$project$StatsTreeMap$requestSitesForNode(_p4._0._0),
+								_0: _user$project$TreeView$requestSitesForNode(_p4._0._0),
 								_1: {ctor: '[]'}
 							}
 						});
@@ -16060,14 +16040,14 @@ var _user$project$StatsTreeMap$update = F2(
 						_0: _elm_lang$core$Native_Utils.update(
 							_p12,
 							{mcpaModel: mcpaModel}),
-						_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$StatsTreeMap$McpaMsg, cmd)
+						_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$TreeView$McpaMsg, cmd)
 					};
 				}
 			default:
 				var _p11 = A2(_user$project$StatsMain$update, _p4._0, _p12.statsModel);
 				var statsModel = _p11._0;
 				var cmd = _p11._1;
-				var getNodes = (!_elm_lang$core$Native_Utils.eq(statsModel.selected, _p12.statsModel.selected)) ? _user$project$StatsTreeMap$requestNodesForSites(
+				var getNodes = (!_elm_lang$core$Native_Utils.eq(statsModel.selected, _p12.statsModel.selected)) ? _user$project$TreeView$requestNodesForSites(
 					_elm_lang$core$Set$toList(statsModel.selected)) : _elm_lang$core$Platform_Cmd$none;
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
@@ -16076,7 +16056,7 @@ var _user$project$StatsTreeMap$update = F2(
 						{statsModel: statsModel}),
 					{
 						ctor: '::',
-						_0: A2(_elm_lang$core$Platform_Cmd$map, _user$project$StatsTreeMap$StatsMsg, cmd),
+						_0: A2(_elm_lang$core$Platform_Cmd$map, _user$project$TreeView$StatsMsg, cmd),
 						_1: {
 							ctor: '::',
 							_0: getNodes,
@@ -16085,7 +16065,7 @@ var _user$project$StatsTreeMap$update = F2(
 					});
 		}
 	});
-var _user$project$StatsTreeMap$view = function (_p13) {
+var _user$project$TreeView$view = function (_p13) {
 	var _p14 = _p13;
 	var _p15 = _p14.mcpaModel;
 	var block = function (color) {
@@ -16162,18 +16142,18 @@ var _user$project$StatsTreeMap$view = function (_p13) {
 					ctor: '::',
 					_0: A2(
 						_elm_lang$html$Html$map,
-						_user$project$StatsTreeMap$McpaMsg,
+						_user$project$TreeView$McpaMsg,
 						A3(_user$project$McpaTreeView$viewTree, _p15, true, selectData)),
 					_1: {ctor: '[]'}
 				}),
 			_1: {ctor: '[]'}
 		});
 };
-var _user$project$StatsTreeMap$init = function (flags) {
+var _user$project$TreeView$init = function (flags) {
 	var _p16 = _user$project$StatsMain$init;
 	var statsModel = _p16._0;
 	var statsCmd = _p16._1;
-	var _p17 = A2(_user$project$McpaModel$init, _user$project$StatsTreeMap$parseData, flags);
+	var _p17 = A2(_user$project$McpaModel$init, _user$project$TreeView$parseData, flags);
 	var mcpaModel = _p17._0;
 	var mcpaCmd = _p17._1;
 	return {
@@ -16182,43 +16162,43 @@ var _user$project$StatsTreeMap$init = function (flags) {
 		_1: _elm_lang$core$Platform_Cmd$batch(
 			{
 				ctor: '::',
-				_0: A2(_elm_lang$core$Platform_Cmd$map, _user$project$StatsTreeMap$McpaMsg, mcpaCmd),
+				_0: A2(_elm_lang$core$Platform_Cmd$map, _user$project$TreeView$McpaMsg, mcpaCmd),
 				_1: {
 					ctor: '::',
-					_0: A2(_elm_lang$core$Platform_Cmd$map, _user$project$StatsTreeMap$StatsMsg, statsCmd),
+					_0: A2(_elm_lang$core$Platform_Cmd$map, _user$project$TreeView$StatsMsg, statsCmd),
 					_1: {ctor: '[]'}
 				}
 			})
 	};
 };
-var _user$project$StatsTreeMap$subscriptions = function (model) {
+var _user$project$TreeView$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$batch(
 		{
 			ctor: '::',
 			_0: A2(
 				_elm_lang$core$Platform_Sub$map,
-				_user$project$StatsTreeMap$McpaMsg,
+				_user$project$TreeView$McpaMsg,
 				_user$project$McpaModel$subscriptions(model.mcpaModel)),
 			_1: {
 				ctor: '::',
 				_0: A2(
 					_elm_lang$core$Platform_Sub$map,
-					_user$project$StatsTreeMap$StatsMsg,
+					_user$project$TreeView$StatsMsg,
 					_user$project$StatsMain$subscriptions(model.statsModel)),
 				_1: {
 					ctor: '::',
-					_0: _user$project$StatsTreeMap$sitesForNode(_user$project$StatsTreeMap$SetSelectedSites),
+					_0: _user$project$TreeView$sitesForNode(_user$project$TreeView$SetSelectedSites),
 					_1: {
 						ctor: '::',
-						_0: _user$project$StatsTreeMap$nodesForSites(_user$project$StatsTreeMap$SetSelectedNodes),
+						_0: _user$project$TreeView$nodesForSites(_user$project$TreeView$SetSelectedNodes),
 						_1: {ctor: '[]'}
 					}
 				}
 			}
 		});
 };
-var _user$project$StatsTreeMap$main = _elm_lang$html$Html$programWithFlags(
-	{init: _user$project$StatsTreeMap$init, update: _user$project$StatsTreeMap$update, view: _user$project$StatsTreeMap$view, subscriptions: _user$project$StatsTreeMap$subscriptions})(
+var _user$project$TreeView$main = _elm_lang$html$Html$programWithFlags(
+	{init: _user$project$TreeView$init, update: _user$project$TreeView$update, view: _user$project$TreeView$view, subscriptions: _user$project$TreeView$subscriptions})(
 	A2(
 		_elm_lang$core$Json_Decode$andThen,
 		function (data) {
@@ -16233,9 +16213,9 @@ var _user$project$StatsTreeMap$main = _elm_lang$html$Html$programWithFlags(
 		A2(_elm_lang$core$Json_Decode$field, 'data', _elm_lang$core$Json_Decode$string)));
 
 var Elm = {};
-Elm['StatsTreeMap'] = Elm['StatsTreeMap'] || {};
-if (typeof _user$project$StatsTreeMap$main !== 'undefined') {
-    _user$project$StatsTreeMap$main(Elm['StatsTreeMap'], 'StatsTreeMap', undefined);
+Elm['TreeView'] = Elm['TreeView'] || {};
+if (typeof _user$project$TreeView$main !== 'undefined') {
+    _user$project$TreeView$main(Elm['TreeView'], 'TreeView', undefined);
 }
 
 if (typeof define === "function" && define['amd'])
