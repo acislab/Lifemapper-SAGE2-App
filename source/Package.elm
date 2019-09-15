@@ -16,6 +16,12 @@ type alias Model =
 
 port openTree : () -> Cmd msg
 
+port openMap : () -> Cmd msg
+
+port openScatter : () -> Cmd msg
+
+port openProjection : () -> Cmd msg
+
 type Msg
     = OpenTree
     | OpenMap
@@ -34,9 +40,9 @@ update msg model =
         OpenTree ->
             (model, openTree ())
         OpenMap ->
-            (model, Cmd.none)
+            (model, openMap ())
         OpenScatter ->
-            (model, Cmd.none)
+            (model, openScatter ())
         OpenProjection ->
             (model, Cmd.none)
         McpaMsg _ ->

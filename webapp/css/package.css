@@ -149,3 +149,38 @@ header > div
     letter-spacing: 0.633333px;
     opacity: 0.87;
 }
+
+.drop-down {
+    list-style: none; 
+    overflow: hidden;
+    width: 100%;
+    background-color: rgb(45, 57, 129);
+    margin: 0 auto;
+    padding: 0;
+    position: absolute;
+    -webkit-transition: height 0.3s ease;
+            transition: height 0.3s ease;
+}
+
+.drop-down.closed {
+    height: 19px;
+}
+
+.drop-down li {
+    outline: 1px solid rgb(16, 20, 41);
+    position: relative;
+}
+
+.drop-down li a {
+    display: block;
+    color: #ecf0f1;
+    text-decoration: none;
+    margin: 0px 0px 2px 4px
+}
+
+.drop-down li:first-child a:after {
+    content: "\25BC";
+    float: right;
+    margin-left: -30px;
+    margin-right: 5px;
+}

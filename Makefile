@@ -2,8 +2,8 @@ ELMFLAGS = --yes --warn
 
 all: boom.tar.gz mcpa.tar.gz
 	cp -r mcpa/elm webapp/
-	cp mcpa/treeView.html.template webapp/treeView.html
-	cp mcpa/index.html.template webapp/index.html
+	#cp mcpa/treeView.html.template webapp/treeView.html
+	#cp mcpa/index.html.template webapp/index.html
 	#cp mcpa/packageView.html.template webapp/packageView.html # TODO: a template probably isn't necessary
 
 debug: ELMFLAGS += --debug
@@ -14,7 +14,7 @@ boom.tar.gz: boom/elm/boomMain.js boom/elm/subsetpam.js boom/*
 	echo "BOOM-TEST" > boom/Version
 	tar -zcvf boom.tar.gz --exclude=boomFlagsOverride.js boom
 
-mcpa.tar.gz: mcpa/elm/StatsHeatMap.js mcpa/elm/TreeView.js mcpa/elm/Package.js mcpa/*
+mcpa.tar.gz: mcpa/elm/TreeView.js mcpa/elm/StatsTreeMap.js mcpa/elm/MapView.js mcpa/elm/ScatterMain.js mcpa/elm/Package.js mcpa/*
 	#git describe --tags > mcpa/VERSION
 	echo "MCPA-TEST" > mcpa/VERSION
 	tar -zcvf mcpa.tar.gz mcpa
@@ -25,11 +25,20 @@ boom/elm/boomMain.js: source/Decoder.elm source/*
 boom/elm/subsetpam.js:  source/Decoder.elm source/*
 	elm-make source/SubsetPam.elm $(ELMFLAGS) --output=boom/elm/subsetpam.js
 
+mcpa/elm/MapView.js: source/Decoder.elm source/*
+	elm-make source/MapView.elm $(ELMFLAGS) --output=mcpa/elm/MapView.js
+	
+mcpa/elm/ScatterMain.js: source/Decoder.elm source/*
+	elm-make source/ScatterMain.elm $(ELMFLAGS) --output=mcpa/elm/ScatterMain.js
+
 mcpa/elm/Package.js: source/Package.elm source/*
 	elm-make source/Package.elm $(ELMFLAGS) --output=mcpa/elm/Package.js
 
-mcpa/elm/StatsHeatMap.js: source/Decoder.elm source/*
-	elm-make source/StatsHeatMap.elm $(ELMFLAGS) --output=mcpa/elm/StatsHeatMap.js
+#mcpa/elm/StatsHeatMap.js: source/Decoder.elm source/*
+#	elm-make source/StatsHeatMap.elm $(ELMFLAGS) --output=mcpa/elm/StatsHeatMap.js
+
+mcpa/elm/StatsTreeMap.js: source/Decoder.elm source/*
+	elm-make source/StatsTreeMap.elm $(ELMFLAGS) --output=mcpa/elm/StatsTreeMap.js
 
 mcpa/elm/TreeView.js: source/Decoder.elm source/*
 	elm-make source/TreeView.elm $(ELMFLAGS) --output=mcpa/elm/TreeView.js

@@ -14057,6 +14057,104 @@ var _user$project$McpaModel$SelectVariable = function (a) {
 	return {ctor: 'SelectVariable', _0: a};
 };
 
+var _user$project$ParseMcpa$nan = 0 / 0;
+var _user$project$ParseMcpa$nodeIdRegex = _elm_lang$core$Regex$caseInsensitive(
+	_elm_lang$core$Regex$regex('Node_(\\d+)'));
+var _user$project$ParseMcpa$parseRecord = F3(
+	function (variables, record, result) {
+		var _p0 = record;
+		if ((_p0.ctor === '::') && (_p0._1.ctor === '::')) {
+			var _p5 = _p0._0;
+			var makeDict = F2(
+				function (cladeId, values) {
+					return A2(
+						_elm_lang$core$List$foldl,
+						function (_p1) {
+							var _p2 = _p1;
+							return A2(
+								_elm_lang$core$Dict$insert,
+								{ctor: '_Tuple3', _0: cladeId, _1: _p0._1._0, _2: _p2._0},
+								_p2._1);
+						},
+						result)(
+						A3(
+							_elm_lang$core$List$map2,
+							F2(
+								function (v0, v1) {
+									return {ctor: '_Tuple2', _0: v0, _1: v1};
+								}),
+							variables,
+							values));
+				});
+			var valueToFloat = function (s) {
+				var _p3 = s;
+				switch (_p3) {
+					case '':
+						return _elm_lang$core$Result$Ok(_user$project$ParseMcpa$nan);
+					case 'nan':
+						return _elm_lang$core$Result$Ok(_user$project$ParseMcpa$nan);
+					default:
+						return A2(
+							_elm_lang$core$Result$map,
+							_elm_lang$core$Basics$abs,
+							_elm_lang$core$String$toFloat(s));
+				}
+			};
+			var values = _elm_community$result_extra$Result_Extra$combine(
+				A2(_elm_lang$core$List$map, valueToFloat, _p0._1._1));
+			var cladeId = function () {
+				var _p4 = A3(
+					_elm_lang$core$Regex$find,
+					_elm_lang$core$Regex$AtMost(1),
+					_user$project$ParseMcpa$nodeIdRegex,
+					_p5);
+				if (_p4.ctor === '[]') {
+					return _elm_lang$core$String$toInt(_p5);
+				} else {
+					return A2(
+						_elm_lang$core$Maybe$withDefault,
+						_elm_lang$core$Result$Err('missing node_id'),
+						A2(
+							_elm_lang$core$Maybe$map,
+							_elm_lang$core$String$toInt,
+							_elm_community$maybe_extra$Maybe_Extra$join(
+								_elm_lang$core$List$head(_p4._0.submatches))));
+				}
+			}();
+			return A3(_elm_lang$core$Result$map2, makeDict, cladeId, values);
+		} else {
+			return _elm_lang$core$Result$Err('bad csv');
+		}
+	});
+var _user$project$ParseMcpa$parseCsv = function (_p6) {
+	var _p7 = _p6;
+	var variables = A2(_elm_lang$core$List$drop, 2, _p7.headers);
+	var data = A3(
+		_elm_lang$core$List$foldl,
+		function (record) {
+			return _elm_lang$core$Result$andThen(
+				A2(_user$project$ParseMcpa$parseRecord, variables, record));
+		},
+		_elm_lang$core$Result$Ok(_elm_lang$core$Dict$empty),
+		_p7.records);
+	return A2(
+		_elm_lang$core$Result$map,
+		F2(
+			function (v0, v1) {
+				return {ctor: '_Tuple2', _0: v0, _1: v1};
+			})(variables),
+		data);
+};
+var _user$project$ParseMcpa$parseMcpa = function (_p8) {
+	return A2(
+		_elm_lang$core$Result$andThen,
+		_user$project$ParseMcpa$parseCsv,
+		A2(
+			_elm_lang$core$Result$mapError,
+			_elm_lang$core$Basics$toString,
+			_periodic$elm_csv$Csv$parse(_p8)));
+};
+
 var _user$project$McpaTreeView$viewTree = F3(
 	function (model, redBlue, selectData) {
 		var _p0 = {
@@ -14533,104 +14631,6 @@ var _user$project$McpaTreeView$viewTree = F3(
 				}
 			});
 	});
-
-var _user$project$ParseMcpa$nan = 0 / 0;
-var _user$project$ParseMcpa$nodeIdRegex = _elm_lang$core$Regex$caseInsensitive(
-	_elm_lang$core$Regex$regex('Node_(\\d+)'));
-var _user$project$ParseMcpa$parseRecord = F3(
-	function (variables, record, result) {
-		var _p0 = record;
-		if ((_p0.ctor === '::') && (_p0._1.ctor === '::')) {
-			var _p5 = _p0._0;
-			var makeDict = F2(
-				function (cladeId, values) {
-					return A2(
-						_elm_lang$core$List$foldl,
-						function (_p1) {
-							var _p2 = _p1;
-							return A2(
-								_elm_lang$core$Dict$insert,
-								{ctor: '_Tuple3', _0: cladeId, _1: _p0._1._0, _2: _p2._0},
-								_p2._1);
-						},
-						result)(
-						A3(
-							_elm_lang$core$List$map2,
-							F2(
-								function (v0, v1) {
-									return {ctor: '_Tuple2', _0: v0, _1: v1};
-								}),
-							variables,
-							values));
-				});
-			var valueToFloat = function (s) {
-				var _p3 = s;
-				switch (_p3) {
-					case '':
-						return _elm_lang$core$Result$Ok(_user$project$ParseMcpa$nan);
-					case 'nan':
-						return _elm_lang$core$Result$Ok(_user$project$ParseMcpa$nan);
-					default:
-						return A2(
-							_elm_lang$core$Result$map,
-							_elm_lang$core$Basics$abs,
-							_elm_lang$core$String$toFloat(s));
-				}
-			};
-			var values = _elm_community$result_extra$Result_Extra$combine(
-				A2(_elm_lang$core$List$map, valueToFloat, _p0._1._1));
-			var cladeId = function () {
-				var _p4 = A3(
-					_elm_lang$core$Regex$find,
-					_elm_lang$core$Regex$AtMost(1),
-					_user$project$ParseMcpa$nodeIdRegex,
-					_p5);
-				if (_p4.ctor === '[]') {
-					return _elm_lang$core$String$toInt(_p5);
-				} else {
-					return A2(
-						_elm_lang$core$Maybe$withDefault,
-						_elm_lang$core$Result$Err('missing node_id'),
-						A2(
-							_elm_lang$core$Maybe$map,
-							_elm_lang$core$String$toInt,
-							_elm_community$maybe_extra$Maybe_Extra$join(
-								_elm_lang$core$List$head(_p4._0.submatches))));
-				}
-			}();
-			return A3(_elm_lang$core$Result$map2, makeDict, cladeId, values);
-		} else {
-			return _elm_lang$core$Result$Err('bad csv');
-		}
-	});
-var _user$project$ParseMcpa$parseCsv = function (_p6) {
-	var _p7 = _p6;
-	var variables = A2(_elm_lang$core$List$drop, 2, _p7.headers);
-	var data = A3(
-		_elm_lang$core$List$foldl,
-		function (record) {
-			return _elm_lang$core$Result$andThen(
-				A2(_user$project$ParseMcpa$parseRecord, variables, record));
-		},
-		_elm_lang$core$Result$Ok(_elm_lang$core$Dict$empty),
-		_p7.records);
-	return A2(
-		_elm_lang$core$Result$map,
-		F2(
-			function (v0, v1) {
-				return {ctor: '_Tuple2', _0: v0, _1: v1};
-			})(variables),
-		data);
-};
-var _user$project$ParseMcpa$parseMcpa = function (_p8) {
-	return A2(
-		_elm_lang$core$Result$andThen,
-		_user$project$ParseMcpa$parseCsv,
-		A2(
-			_elm_lang$core$Result$mapError,
-			_elm_lang$core$Basics$toString,
-			_periodic$elm_csv$Csv$parse(_p8)));
-};
 
 var _user$project$StatsMain$svgViewBox2String = function (_p0) {
 	var _p1 = _p0;
@@ -16099,207 +16099,10 @@ var _user$project$StatsMain$subscriptions = _elm_lang$core$Basics$always(
 var _user$project$StatsMain$main = _elm_lang$html$Html$program(
 	{init: _user$project$StatsMain$init, update: _user$project$StatsMain$update, view: _user$project$StatsMain$view, subscriptions: _user$project$StatsMain$subscriptions})();
 
-var _user$project$TreeView$parseData = function (data) {
-	var _p0 = _user$project$ParseMcpa$parseMcpa(data);
-	if (_p0.ctor === 'Ok') {
-		return _p0._0;
-	} else {
-		return _elm_lang$core$Native_Utils.crashCase(
-			'TreeView',
-			{
-				start: {line: 126, column: 5},
-				end: {line: 131, column: 66}
-			},
-			_p0)(
-			A2(_elm_lang$core$Basics_ops['++'], 'failed to decode MCPA matrix: ', _p0._0));
-	}
-};
-var _user$project$TreeView$requestSitesForNode = _elm_lang$core$Native_Platform.outgoingPort(
-	'requestSitesForNode',
-	function (v) {
-		return v;
-	});
-var _user$project$TreeView$sitesForNode = _elm_lang$core$Native_Platform.incomingPort(
-	'sitesForNode',
-	_elm_lang$core$Json_Decode$list(
-		A2(
-			_elm_lang$core$Json_Decode$andThen,
-			function (x0) {
-				return A2(
-					_elm_lang$core$Json_Decode$andThen,
-					function (x1) {
-						return _elm_lang$core$Json_Decode$succeed(
-							{ctor: '_Tuple2', _0: x0, _1: x1});
-					},
-					A2(_elm_lang$core$Json_Decode$index, 1, _elm_lang$core$Json_Decode$string));
-			},
-			A2(_elm_lang$core$Json_Decode$index, 0, _elm_lang$core$Json_Decode$int))));
-var _user$project$TreeView$requestNodesForSites = _elm_lang$core$Native_Platform.outgoingPort(
-	'requestNodesForSites',
-	function (v) {
-		return _elm_lang$core$Native_List.toArray(v).map(
-			function (v) {
-				return v;
-			});
-	});
-var _user$project$TreeView$nodesForSites = _elm_lang$core$Native_Platform.incomingPort(
-	'nodesForSites',
-	A2(
-		_elm_lang$core$Json_Decode$andThen,
-		function (x0) {
-			return A2(
-				_elm_lang$core$Json_Decode$andThen,
-				function (x1) {
-					return _elm_lang$core$Json_Decode$succeed(
-						{ctor: '_Tuple2', _0: x0, _1: x1});
-				},
-				A2(
-					_elm_lang$core$Json_Decode$index,
-					1,
-					_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$int)));
-		},
-		A2(
-			_elm_lang$core$Json_Decode$index,
-			0,
-			_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$int))));
-var _user$project$TreeView$selectNode = _elm_lang$core$Native_Platform.incomingPort('selectNode', _elm_lang$core$Json_Decode$int);
-var _user$project$TreeView$Model = F2(
-	function (a, b) {
-		return {mcpaModel: a, statsModel: b};
-	});
-var _user$project$TreeView$SetSelectedNodes = function (a) {
-	return {ctor: 'SetSelectedNodes', _0: a};
-};
-var _user$project$TreeView$SetSelectedSites = function (a) {
-	return {ctor: 'SetSelectedSites', _0: a};
-};
-var _user$project$TreeView$StatsMsg = function (a) {
-	return {ctor: 'StatsMsg', _0: a};
-};
-var _user$project$TreeView$McpaMsg = function (a) {
-	return {ctor: 'McpaMsg', _0: a};
-};
-var _user$project$TreeView$update = F2(
-	function (msg, _p2) {
-		var _p3 = _p2;
-		var _p12 = _p3;
-		var _p4 = msg;
-		switch (_p4.ctor) {
-			case 'SetSelectedNodes':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						_p12,
-						{
-							mcpaModel: _elm_lang$core$Native_Utils.update(
-								_p3.mcpaModel,
-								{
-									selectedNode: _elm_lang$core$Maybe$Nothing,
-									flaggedNodes: {ctor: '_Tuple2', _0: _p4._0._0, _1: _p4._0._1}
-								})
-						}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'SetSelectedSites':
-				var flagged = _elm_lang$core$Dict$fromList(
-					A2(
-						_elm_lang$core$List$filterMap,
-						function (_p5) {
-							var _p6 = _p5;
-							var _p8 = _p6._0;
-							var _p7 = _p6._1;
-							switch (_p7) {
-								case 'left':
-									return _elm_lang$core$Maybe$Just(
-										{ctor: '_Tuple2', _0: _p8, _1: 'blue'});
-								case 'right':
-									return _elm_lang$core$Maybe$Just(
-										{ctor: '_Tuple2', _0: _p8, _1: 'red'});
-								case 'both':
-									return _elm_lang$core$Maybe$Just(
-										{ctor: '_Tuple2', _0: _p8, _1: 'purple'});
-								default:
-									return _elm_lang$core$Maybe$Nothing;
-							}
-						},
-						_p4._0));
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						_p12,
-						{
-							statsModel: _elm_lang$core$Native_Utils.update(
-								_p3.statsModel,
-								{flagged: flagged, selected: _elm_lang$core$Set$empty})
-						}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'McpaMsg':
-				if (_p4._0.ctor === 'SelectNode') {
-					var _p9 = A2(_user$project$McpaModel$update, _p4._0, _p12.mcpaModel);
-					var mcpaModel = _p9._0;
-					var cmd = _p9._1;
-					return A2(
-						_elm_lang$core$Platform_Cmd_ops['!'],
-						_elm_lang$core$Native_Utils.update(
-							_p12,
-							{
-								mcpaModel: _elm_lang$core$Native_Utils.update(
-									mcpaModel,
-									{
-										flaggedNodes: {
-											ctor: '_Tuple2',
-											_0: {ctor: '[]'},
-											_1: {ctor: '[]'}
-										}
-									})
-							}),
-						{
-							ctor: '::',
-							_0: A2(_elm_lang$core$Platform_Cmd$map, _user$project$TreeView$McpaMsg, cmd),
-							_1: {
-								ctor: '::',
-								_0: _user$project$TreeView$requestSitesForNode(_p4._0._0),
-								_1: {ctor: '[]'}
-							}
-						});
-				} else {
-					var _p10 = A2(_user$project$McpaModel$update, _p4._0, _p12.mcpaModel);
-					var mcpaModel = _p10._0;
-					var cmd = _p10._1;
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							_p12,
-							{mcpaModel: mcpaModel}),
-						_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$TreeView$McpaMsg, cmd)
-					};
-				}
-			default:
-				var _p11 = A2(_user$project$StatsMain$update, _p4._0, _p12.statsModel);
-				var statsModel = _p11._0;
-				var cmd = _p11._1;
-				var getNodes = (!_elm_lang$core$Native_Utils.eq(statsModel.selected, _p12.statsModel.selected)) ? _user$project$TreeView$requestNodesForSites(
-					_elm_lang$core$Set$toList(statsModel.selected)) : _elm_lang$core$Platform_Cmd$none;
-				return A2(
-					_elm_lang$core$Platform_Cmd_ops['!'],
-					_elm_lang$core$Native_Utils.update(
-						_p12,
-						{statsModel: statsModel}),
-					{
-						ctor: '::',
-						_0: A2(_elm_lang$core$Platform_Cmd$map, _user$project$TreeView$StatsMsg, cmd),
-						_1: {
-							ctor: '::',
-							_0: getNodes,
-							_1: {ctor: '[]'}
-						}
-					});
-		}
-	});
-var _user$project$TreeView$view = function (_p13) {
-	var _p14 = _p13;
-	var _p15 = _p14.mcpaModel;
+var _user$project$MapView$view = function (_p0) {
+	var _p1 = _p0;
+	var _p4 = _p1.statsModel;
+	var _p3 = _p1.mcpaModel;
 	var block = function (color) {
 		return A2(
 			_elm_lang$html$Html$div,
@@ -16327,11 +16130,191 @@ var _user$project$TreeView$view = function (_p13) {
 			},
 			{ctor: '[]'});
 	};
+	var legend = function () {
+		var _p2 = _p3.selectedNode;
+		if (_p2.ctor === 'Just') {
+			return A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$style(
+						{
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'display', _1: 'flex'},
+							_1: {
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'justify-content', _1: 'space-around'},
+								_1: {ctor: '[]'}
+							}
+						}),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$style(
+								{
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'margin-bottom', _1: '8px'},
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('Clade 1 = '),
+							_1: {
+								ctor: '::',
+								_0: block('blue'),
+								_1: {ctor: '[]'}
+							}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$style(
+									{
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: 'margin-bottom', _1: '8px'},
+										_1: {ctor: '[]'}
+									}),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('Clade 2 = '),
+								_1: {
+									ctor: '::',
+									_0: block('red'),
+									_1: {ctor: '[]'}
+								}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$div,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$style(
+										{
+											ctor: '::',
+											_0: {ctor: '_Tuple2', _0: 'margin-bottom', _1: '8px'},
+											_1: {ctor: '[]'}
+										}),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('Both clades = '),
+									_1: {
+										ctor: '::',
+										_0: block('purple'),
+										_1: {ctor: '[]'}
+									}
+								}),
+							_1: {ctor: '[]'}
+						}
+					}
+				});
+		} else {
+			return (!_elm_lang$core$Set$isEmpty(_p4.selected)) ? A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$style(
+						{
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'display', _1: 'flex'},
+							_1: {
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'justify-content', _1: 'space-around'},
+								_1: {ctor: '[]'}
+							}
+						}),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$style(
+								{
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'margin-bottom', _1: '8px'},
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									'Species present in ',
+									A2(
+										_elm_lang$core$Basics_ops['++'],
+										_elm_lang$core$Basics$toString(
+											_elm_lang$core$Set$size(_p4.selected)),
+										' selected sites = '))),
+							_1: {
+								ctor: '::',
+								_0: block('red'),
+								_1: {ctor: '[]'}
+							}
+						}),
+					_1: {ctor: '[]'}
+				}) : A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$style(
+						{
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'display', _1: 'flex'},
+							_1: {
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'justify-content', _1: 'space-around'},
+								_1: {ctor: '[]'}
+							}
+						}),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$style(
+								{
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'margin-bottom', _1: '8px'},
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('Select areas from map or plot, or nodes from tree.'),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				});
+		}
+	}();
 	var selectData = function (cladeId) {
 		return A2(
 			_elm_lang$core$Dict$get,
-			{ctor: '_Tuple3', _0: cladeId, _1: 'Observed', _2: _p15.selectedVariable},
-			_p15.data);
+			{ctor: '_Tuple3', _0: cladeId, _1: 'Observed', _2: _p3.selectedVariable},
+			_p3.data);
 	};
 	var selectedSiteIds = A2(
 		_elm_lang$core$String$join,
@@ -16339,7 +16322,7 @@ var _user$project$TreeView$view = function (_p13) {
 		A2(
 			_elm_lang$core$List$map,
 			_elm_lang$core$Basics$toString,
-			_elm_lang$core$Set$toList(_p14.statsModel.selected)));
+			_elm_lang$core$Set$toList(_p4.selected)));
 	return A2(
 		_elm_lang$html$Html$div,
 		{
@@ -16373,64 +16356,308 @@ var _user$project$TreeView$view = function (_p13) {
 				{
 					ctor: '::',
 					_0: A2(
-						_elm_lang$html$Html$map,
-						_user$project$TreeView$McpaMsg,
-						A3(_user$project$McpaTreeView$viewTree, _p15, true, selectData)),
+						_elm_lang$html$Html$div,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$style(
+								{
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'margin', _1: '0 12px'},
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$div,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('leaflet-map'),
+									_1: {
+										ctor: '::',
+										_0: A2(_elm_lang$html$Html_Attributes$attribute, 'data-map-sites', selectedSiteIds),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html_Attributes$attribute,
+												'data-map-column',
+												A2(
+													_elm_lang$core$Maybe$withDefault,
+													'',
+													A2(_elm_lang$core$Maybe$map, _elm_lang$core$Basics$toString, _p3.selectedNode))),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$style(
+													{
+														ctor: '::',
+														_0: {ctor: '_Tuple2', _0: 'width', _1: '625px'},
+														_1: {
+															ctor: '::',
+															_0: {ctor: '_Tuple2', _0: 'height', _1: '500px'},
+															_1: {ctor: '[]'}
+														}
+													}),
+												_1: {ctor: '[]'}
+											}
+										}
+									}
+								},
+								{ctor: '[]'}),
+							_1: {ctor: '[]'}
+						}),
 					_1: {ctor: '[]'}
 				}),
 			_1: {ctor: '[]'}
 		});
 };
-var _user$project$TreeView$init = function (flags) {
-	var _p16 = _user$project$StatsMain$init;
-	var statsModel = _p16._0;
-	var statsCmd = _p16._1;
-	var _p17 = A2(_user$project$McpaModel$init, _user$project$TreeView$parseData, flags);
-	var mcpaModel = _p17._0;
-	var mcpaCmd = _p17._1;
+var _user$project$MapView$parseData = function (data) {
+	var _p5 = _user$project$ParseMcpa$parseMcpa(data);
+	if (_p5.ctor === 'Ok') {
+		return _p5._0;
+	} else {
+		return _elm_lang$core$Native_Utils.crashCase(
+			'MapView',
+			{
+				start: {line: 128, column: 5},
+				end: {line: 133, column: 66}
+			},
+			_p5)(
+			A2(_elm_lang$core$Basics_ops['++'], 'failed to decode MCPA matrix: ', _p5._0));
+	}
+};
+var _user$project$MapView$requestSitesForNode = _elm_lang$core$Native_Platform.outgoingPort(
+	'requestSitesForNode',
+	function (v) {
+		return v;
+	});
+var _user$project$MapView$sitesForNode = _elm_lang$core$Native_Platform.incomingPort(
+	'sitesForNode',
+	_elm_lang$core$Json_Decode$list(
+		A2(
+			_elm_lang$core$Json_Decode$andThen,
+			function (x0) {
+				return A2(
+					_elm_lang$core$Json_Decode$andThen,
+					function (x1) {
+						return _elm_lang$core$Json_Decode$succeed(
+							{ctor: '_Tuple2', _0: x0, _1: x1});
+					},
+					A2(_elm_lang$core$Json_Decode$index, 1, _elm_lang$core$Json_Decode$string));
+			},
+			A2(_elm_lang$core$Json_Decode$index, 0, _elm_lang$core$Json_Decode$int))));
+var _user$project$MapView$requestNodesForSites = _elm_lang$core$Native_Platform.outgoingPort(
+	'requestNodesForSites',
+	function (v) {
+		return _elm_lang$core$Native_List.toArray(v).map(
+			function (v) {
+				return v;
+			});
+	});
+var _user$project$MapView$nodesForSites = _elm_lang$core$Native_Platform.incomingPort(
+	'nodesForSites',
+	A2(
+		_elm_lang$core$Json_Decode$andThen,
+		function (x0) {
+			return A2(
+				_elm_lang$core$Json_Decode$andThen,
+				function (x1) {
+					return _elm_lang$core$Json_Decode$succeed(
+						{ctor: '_Tuple2', _0: x0, _1: x1});
+				},
+				A2(
+					_elm_lang$core$Json_Decode$index,
+					1,
+					_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$int)));
+		},
+		A2(
+			_elm_lang$core$Json_Decode$index,
+			0,
+			_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$int))));
+var _user$project$MapView$Model = F2(
+	function (a, b) {
+		return {mcpaModel: a, statsModel: b};
+	});
+var _user$project$MapView$SetSelectedNodes = function (a) {
+	return {ctor: 'SetSelectedNodes', _0: a};
+};
+var _user$project$MapView$SetSelectedSites = function (a) {
+	return {ctor: 'SetSelectedSites', _0: a};
+};
+var _user$project$MapView$StatsMsg = function (a) {
+	return {ctor: 'StatsMsg', _0: a};
+};
+var _user$project$MapView$McpaMsg = function (a) {
+	return {ctor: 'McpaMsg', _0: a};
+};
+var _user$project$MapView$update = F2(
+	function (msg, _p7) {
+		var _p8 = _p7;
+		var _p17 = _p8;
+		var _p9 = msg;
+		switch (_p9.ctor) {
+			case 'SetSelectedNodes':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						_p17,
+						{
+							mcpaModel: _elm_lang$core$Native_Utils.update(
+								_p8.mcpaModel,
+								{
+									selectedNode: _elm_lang$core$Maybe$Nothing,
+									flaggedNodes: {ctor: '_Tuple2', _0: _p9._0._0, _1: _p9._0._1}
+								})
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'SetSelectedSites':
+				var flagged = _elm_lang$core$Dict$fromList(
+					A2(
+						_elm_lang$core$List$filterMap,
+						function (_p10) {
+							var _p11 = _p10;
+							var _p13 = _p11._0;
+							var _p12 = _p11._1;
+							switch (_p12) {
+								case 'left':
+									return _elm_lang$core$Maybe$Just(
+										{ctor: '_Tuple2', _0: _p13, _1: 'blue'});
+								case 'right':
+									return _elm_lang$core$Maybe$Just(
+										{ctor: '_Tuple2', _0: _p13, _1: 'red'});
+								case 'both':
+									return _elm_lang$core$Maybe$Just(
+										{ctor: '_Tuple2', _0: _p13, _1: 'purple'});
+								default:
+									return _elm_lang$core$Maybe$Nothing;
+							}
+						},
+						_p9._0));
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						_p17,
+						{
+							statsModel: _elm_lang$core$Native_Utils.update(
+								_p8.statsModel,
+								{flagged: flagged, selected: _elm_lang$core$Set$empty})
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'McpaMsg':
+				if (_p9._0.ctor === 'SelectNode') {
+					var _p14 = A2(_user$project$McpaModel$update, _p9._0, _p17.mcpaModel);
+					var mcpaModel = _p14._0;
+					var cmd = _p14._1;
+					return A2(
+						_elm_lang$core$Platform_Cmd_ops['!'],
+						_elm_lang$core$Native_Utils.update(
+							_p17,
+							{
+								mcpaModel: _elm_lang$core$Native_Utils.update(
+									mcpaModel,
+									{
+										flaggedNodes: {
+											ctor: '_Tuple2',
+											_0: {ctor: '[]'},
+											_1: {ctor: '[]'}
+										}
+									})
+							}),
+						{
+							ctor: '::',
+							_0: A2(_elm_lang$core$Platform_Cmd$map, _user$project$MapView$McpaMsg, cmd),
+							_1: {
+								ctor: '::',
+								_0: _user$project$MapView$requestSitesForNode(_p9._0._0),
+								_1: {ctor: '[]'}
+							}
+						});
+				} else {
+					var _p15 = A2(_user$project$McpaModel$update, _p9._0, _p17.mcpaModel);
+					var mcpaModel = _p15._0;
+					var cmd = _p15._1;
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							_p17,
+							{mcpaModel: mcpaModel}),
+						_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$MapView$McpaMsg, cmd)
+					};
+				}
+			default:
+				var _p16 = A2(_user$project$StatsMain$update, _p9._0, _p17.statsModel);
+				var statsModel = _p16._0;
+				var cmd = _p16._1;
+				var getNodes = (!_elm_lang$core$Native_Utils.eq(statsModel.selected, _p17.statsModel.selected)) ? _user$project$MapView$requestNodesForSites(
+					_elm_lang$core$Set$toList(statsModel.selected)) : _elm_lang$core$Platform_Cmd$none;
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						_p17,
+						{statsModel: statsModel}),
+					{
+						ctor: '::',
+						_0: A2(_elm_lang$core$Platform_Cmd$map, _user$project$MapView$StatsMsg, cmd),
+						_1: {
+							ctor: '::',
+							_0: getNodes,
+							_1: {ctor: '[]'}
+						}
+					});
+		}
+	});
+var _user$project$MapView$init = function (flags) {
+	var _p18 = _user$project$StatsMain$init;
+	var statsModel = _p18._0;
+	var statsCmd = _p18._1;
+	var _p19 = A2(_user$project$McpaModel$init, _user$project$MapView$parseData, flags);
+	var mcpaModel = _p19._0;
+	var mcpaCmd = _p19._1;
 	return {
 		ctor: '_Tuple2',
 		_0: {mcpaModel: mcpaModel, statsModel: statsModel},
 		_1: _elm_lang$core$Platform_Cmd$batch(
 			{
 				ctor: '::',
-				_0: A2(_elm_lang$core$Platform_Cmd$map, _user$project$TreeView$McpaMsg, mcpaCmd),
+				_0: A2(_elm_lang$core$Platform_Cmd$map, _user$project$MapView$McpaMsg, mcpaCmd),
 				_1: {
 					ctor: '::',
-					_0: A2(_elm_lang$core$Platform_Cmd$map, _user$project$TreeView$StatsMsg, statsCmd),
+					_0: A2(_elm_lang$core$Platform_Cmd$map, _user$project$MapView$StatsMsg, statsCmd),
 					_1: {ctor: '[]'}
 				}
 			})
 	};
 };
-var _user$project$TreeView$subscriptions = function (model) {
+var _user$project$MapView$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$batch(
 		{
 			ctor: '::',
 			_0: A2(
 				_elm_lang$core$Platform_Sub$map,
-				_user$project$TreeView$McpaMsg,
+				_user$project$MapView$McpaMsg,
 				_user$project$McpaModel$subscriptions(model.mcpaModel)),
 			_1: {
 				ctor: '::',
 				_0: A2(
 					_elm_lang$core$Platform_Sub$map,
-					_user$project$TreeView$StatsMsg,
+					_user$project$MapView$StatsMsg,
 					_user$project$StatsMain$subscriptions(model.statsModel)),
 				_1: {
 					ctor: '::',
-					_0: _user$project$TreeView$sitesForNode(_user$project$TreeView$SetSelectedSites),
+					_0: _user$project$MapView$sitesForNode(_user$project$MapView$SetSelectedSites),
 					_1: {
 						ctor: '::',
-						_0: _user$project$TreeView$nodesForSites(_user$project$TreeView$SetSelectedNodes),
+						_0: _user$project$MapView$nodesForSites(_user$project$MapView$SetSelectedNodes),
 						_1: {ctor: '[]'}
 					}
 				}
 			}
 		});
 };
-var _user$project$TreeView$main = _elm_lang$html$Html$programWithFlags(
-	{init: _user$project$TreeView$init, update: _user$project$TreeView$update, view: _user$project$TreeView$view, subscriptions: _user$project$TreeView$subscriptions})(
+var _user$project$MapView$main = _elm_lang$html$Html$programWithFlags(
+	{init: _user$project$MapView$init, update: _user$project$MapView$update, view: _user$project$MapView$view, subscriptions: _user$project$MapView$subscriptions})(
 	A2(
 		_elm_lang$core$Json_Decode$andThen,
 		function (data) {
@@ -16445,9 +16672,9 @@ var _user$project$TreeView$main = _elm_lang$html$Html$programWithFlags(
 		A2(_elm_lang$core$Json_Decode$field, 'data', _elm_lang$core$Json_Decode$string)));
 
 var Elm = {};
-Elm['TreeView'] = Elm['TreeView'] || {};
-if (typeof _user$project$TreeView$main !== 'undefined') {
-    _user$project$TreeView$main(Elm['TreeView'], 'TreeView', undefined);
+Elm['MapView'] = Elm['MapView'] || {};
+if (typeof _user$project$MapView$main !== 'undefined') {
+    _user$project$MapView$main(Elm['MapView'], 'MapView', undefined);
 }
 
 if (typeof define === "function" && define['amd'])

@@ -25,7 +25,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 // Elm init
 var node = document.getElementById("app"); // TODO: THIS IS BAD!!! I think?
-while(node.firstChild) { node.removeChild(node.firstChild);}
+while(node.firstChild) { node.removeChild(node.firstChild); }
 var app = Elm.Package.embed(node, {
     data: mcpaMatrix,
     taxonTree: taxonTree
@@ -46,4 +46,14 @@ SAGE2_AppState.titleUpdate("Lifemapper Package");
 app.ports.openTree.subscribe(function(data) {
     console.log("packageMain.js: requesting openTreeCallback");
     SAGE2_AppState.callFunctionInContainer("openTreeCallback", {});
+});
+
+app.ports.openMap.subscribe(function(data) {
+    console.log("packageMain.js: requesting openMapCallback");
+    SAGE2_AppState.callFunctionInContainer("openMapCallback", {});
+});
+
+app.ports.openScatter.subscribe(function(data) {
+    console.log("packageMain.js: requesting openScatterCallback");
+    SAGE2_AppState.callFunctionInContainer("openScatterCallback", {});
 });

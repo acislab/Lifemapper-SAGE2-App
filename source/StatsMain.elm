@@ -29,7 +29,7 @@ import Maybe.Extra as Maybe
 import Set exposing (Set)
 import Dict exposing (Dict)
 import Html
-import Html.Attributes
+import Html.Attributes as A
 import Html.Events
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
@@ -159,6 +159,8 @@ type alias Model =
     , scale : DataScale
     , xCol : String
     , yCol : String
+    , xSelectorClosed : Bool -- THIS IS AWFUL
+    , ySelectorClosed : Bool -- THIS IS AWFUL
     }
 
 
@@ -167,6 +169,10 @@ type Msg
     | SitesSelectedMsg (List Int)
     | XColSelectedMsg String
     | YColSelectedMsg String
+    | ToggleXSelector -- AWFUL
+    | ToggleYSelector -- AWFUL
+    | CloseXSelector -- AWFUL
+    | CloseYSelector -- AWFUL
     | ReceivedStats
         { sitesObserved : List StatsForSite
         , statNameLookup : List ( String, { name : String, description : String } )
@@ -176,6 +182,16 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        ToggleXSelector ->
+            ( { model | xSelectorClosed = (not model.xSelectorClosed) }, Cmd.none )
+        CloseXSelector ->
+            ( { model | xSelectorClosed = True }, Cmd.none )
+            
+        ToggleYSelector ->
+            ( { model | ySelectorClosed = (not model.ySelectorClosed) }, Cmd.none )
+        CloseYSelector ->
+            ( { model | ySelectorClosed = True }, Cmd.none )
+
         ReceivedStats { sitesObserved, statNameLookup } ->
             let
                 variables =
@@ -384,7 +400,7 @@ drawXAxis label min max =
                 [ x "990"
                 , y "1030"
                 , textAnchor "end"
-                , Html.Attributes.style [ ( "font-size", "20px" ) ]
+                , A.style [ ( "font-size", "20px" ) ]
                 ]
                 [ max |> formatNumber |> text ]
 
@@ -392,7 +408,7 @@ drawXAxis label min max =
             text_
                 [ x "0"
                 , y "1030"
-                , Html.Attributes.style [ ( "font-size", "20px" ) ]
+                , A.style [ ( "font-size", "20px" ) ]
                 ]
                 [ min |> formatNumber |> text ]
 
@@ -401,7 +417,7 @@ drawXAxis label min max =
                 [ x "500"
                 , y "1050"
                 , textAnchor "middle"
-                , Html.Attributes.style [ ( "font-size", "30px" ) ]
+                , A.style [ ( "font-size", "30px" ) ]
                 ]
                 [ text label ]
     in
@@ -426,7 +442,7 @@ drawYAxis label min max =
                 [ x "-10"
                 , y "30"
                 , textAnchor "end"
-                , Html.Attributes.style [ ( "font-size", "20px" ) ]
+                , A.style [ ( "font-size", "20px" ) ]
                 ]
                 [ max |> formatNumber |> text ]
 
@@ -435,7 +451,7 @@ drawYAxis label min max =
                 [ x "-10"
                 , y "1000"
                 , textAnchor "end"
-                , Html.Attributes.style [ ( "font-size", "20px" ) ]
+                , A.style [ ( "font-size", "20px" ) ]
                 ]
                 [ min |> formatNumber |> text ]
 
@@ -445,7 +461,7 @@ drawYAxis label min max =
                 , y "50"
                 , textAnchor "middle"
                 , transform "rotate(90)"
-                , Html.Attributes.style [ ( "font-size", "30px" ) ]
+                , A.style [ ( "font-size", "30px" ) ]
                 ]
                 [ text label ]
     in
@@ -488,14 +504,63 @@ viewPlot model =
                                 []
                     )
 
+        liHeight =
+            19
+
+        liBorder =
+            2
+
+        selectorHeight =
+            case model.xSelectorClosed of
+                True ->
+                    liHeight
+                False ->
+                    (liHeight + liBorder) * List.length model.variables - liBorder
+
         variableSelector selected select =
+            Html.span [ A.style [ ("width", "45%") ] ]
+                [ Html.ul
+                    [ A.classList [ ("drop-down", True), ("closed", (model.xSelectorClosed == True)) ]
+                    , A.style [ ( "width", "230px" ), ( "height", toString selectorHeight ) ]
+                    ]
+                    (List.concat
+                        [ [ Html.li []
+                                [ Html.a
+                                    [ A.href "#"
+                                    , A.class "nav-button"
+                                    , Html.Events.onClick ToggleXSelector
+                                    ]
+                                    [ Html.text selected ]
+                                ]
+                            ]
+                        , model.variables
+                            |> List.map
+                                (\v ->
+                                    Html.li []
+                                        [ Html.a
+                                            [ A.href "#"
+                                            , A.value v
+                                            , Html.Events.onClick (select v)
+                                            ]
+                                            [ Dict.get v model.statNames
+                                                |> Maybe.map .name
+                                                |> Maybe.withDefault v
+                                                |> Html.text
+                                            ]
+                                        ]
+                                )
+                        ]
+                    )
+                ]
+
+        {--variableSelector selected select =
             Html.select [ Html.Events.onInput select ]
                 (model.variables
                     |> List.map
                         (\v ->
                             Html.option
-                                [ Html.Attributes.selected (v == selected)
-                                , Html.Attributes.value v
+                                [ A.selected (v == selected)
+                                , A.value v
                                 ]
                                 [ Dict.get v model.statNames
                                     |> Maybe.map .name
@@ -503,24 +568,31 @@ viewPlot model =
                                     |> Html.text
                                 ]
                         )
-                )
+                )--}
     in
         Html.div []
-            [ Html.h3 [ Html.Attributes.style [ ( "text-align", "center" ) ] ]
+            [ Html.h3 [ A.style [ ( "text-align", "center" ) ] ]
                 [ Html.text "Site Based Stat Relationships" ]
-            , Html.div [ Html.Attributes.style [ ( "text-align", "center" ) ] ]
+            , Html.div
+                [ A.style
+                    [ ( "position", "relative" )
+                    , ( "display", "flex" )
+                    , ( "justify-content", "space-between" )
+                    , ( "text-align", "center" ) 
+                    ]
+                ]
                 [ variableSelector model.yCol YColSelectedMsg
-                , Html.text " vs "
+                , Html.span [ A.style [ ("width", "10%") ] ] [Html.text "vs"]
                 , variableSelector model.xCol XColSelectedMsg
                 ]
             , svg
                 [ width <| toString svgViewBox.width
                 , height <| toString svgViewBox.height
                 , viewBox <| svgViewBox2String svgViewBox
-                , Html.Attributes.id "plot"
+                , A.id "plot"
                 ]
                 ((drawScatter model) ++ selectionBox)
-            , Html.p [ Html.Attributes.style [ ( "width", "500px" ) ] ]
+            {--, Html.p [ A.style [ ( "width", "500px" ) ] ]
                 [ Html.text <|
                     "The scatter plot shows relationships between site based statistics; "
                         ++ "each dot represents a single site.  If sites in the map are highlighted, "
@@ -529,7 +601,7 @@ viewPlot model =
                         ++ "Doing so will highlight the selected points as well as those sites on the map and "
                         ++ "the species present at those sites in the tree.  Use the two drop down boxes to select "
                         ++ "the metrics to use for the X and Y axes."
-                ]
+                ]--}
             ]
 
 
@@ -541,22 +613,22 @@ view model =
     in
         Html.div
             -- [ Html.Events.on "keyup" (Decode.map KeyUp <| Decode.field "key" Decode.string)
-            [ Html.Attributes.style
+            [ A.style
                 [ ( "display", "flex" )
                 , ( "flex-direction", "flex-row" )
                 , ( "font-family", "sans-serif" )
                 ]
-            , Html.Attributes.tabindex 0
+            , A.tabindex 0
             ]
             [ viewPlot model
             , Html.div
-                [ Html.Attributes.style [ ( "flex-grow", "1" ) ] ]
-                [ Html.h3 [ Html.Attributes.style [ ( "text-align", "center" ) ] ]
+                [ A.style [ ( "flex-grow", "1" ) ] ]
+                [ Html.h3 [ A.style [ ( "text-align", "center" ) ] ]
                     [ Html.text "Site Map" ]
                 , Html.div
-                    [ Html.Attributes.class "leaflet-map"
-                    , Html.Attributes.attribute "data-map-sites" selectedSiteIds
-                    , Html.Attributes.style
+                    [ A.class "leaflet-map"
+                    , A.attribute "data-map-sites" selectedSiteIds
+                    , A.style
                         [ ( "max-width", "900px" )
                         , ( "height", "500px" )
                         , ( "margin-left", "auto" )
@@ -580,6 +652,8 @@ init =
       , scale = DataScale 1 1 1 1
       , xCol = ""
       , yCol = ""
+      , xSelectorClosed = True
+      , ySelectorClosed = True
       }
     , requestStats ()
     )

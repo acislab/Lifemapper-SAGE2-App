@@ -13940,12 +13940,28 @@ var _user$project$McpaModel$update = F2(
 	function (msg, model) {
 		var _p0 = msg;
 		switch (_p0.ctor) {
+			case 'ToggleSelector':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{selectorClosed: !model.selectorClosed}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'CloseSelector':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{selectorClosed: true}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			case 'SelectVariable':
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{selectedVariable: _p0._0}),
+						{selectedVariable: _p0._0, selectorClosed: true}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'ToggleShowLengths':
@@ -13981,8 +13997,8 @@ var _user$project$McpaModel$init = F2(
 				return _elm_lang$core$Native_Utils.crashCase(
 					'McpaModel',
 					{
-						start: {line: 66, column: 13},
-						end: {line: 71, column: 76}
+						start: {line: 64, column: 13},
+						end: {line: 69, column: 76}
 					},
 					_p1)(
 					A2(_elm_lang$core$Basics_ops['++'], 'failed parsing Nexus tree data: ', _p1._0));
@@ -14013,7 +14029,8 @@ var _user$project$McpaModel$init = F2(
 				},
 				selectedNode: _elm_lang$core$Maybe$Nothing,
 				showBranchLengths: false,
-				data: data
+				data: data,
+				selectorClosed: true
 			},
 			_1: _elm_lang$core$Platform_Cmd$none
 		};
@@ -14026,10 +14043,12 @@ var _user$project$McpaModel$TreeInfo = F4(
 	function (a, b, c, d) {
 		return {root: a, length: b, depth: c, breadth: d};
 	});
-var _user$project$McpaModel$Model = F7(
-	function (a, b, c, d, e, f, g) {
-		return {treeInfo: a, variables: b, data: c, flaggedNodes: d, selectedVariable: e, selectedNode: f, showBranchLengths: g};
+var _user$project$McpaModel$Model = F8(
+	function (a, b, c, d, e, f, g, h) {
+		return {treeInfo: a, variables: b, data: c, flaggedNodes: d, selectedVariable: e, selectedNode: f, showBranchLengths: g, selectorClosed: h};
 	});
+var _user$project$McpaModel$CloseSelector = {ctor: 'CloseSelector'};
+var _user$project$McpaModel$ToggleSelector = {ctor: 'ToggleSelector'};
 var _user$project$McpaModel$SelectNode = function (a) {
 	return {ctor: 'SelectNode', _0: a};
 };
@@ -14054,7 +14073,7 @@ var _user$project$McpaTreeView$viewTree = F3(
 				_0: _elm_lang$html$Html_Attributes$style(
 					{
 						ctor: '::',
-						_0: {ctor: '_Tuple2', _0: 'width', _1: '558px'},
+						_0: {ctor: '_Tuple2', _0: 'width', _1: '100%'},
 						_1: {
 							ctor: '::',
 							_0: {
@@ -14082,11 +14101,15 @@ var _user$project$McpaTreeView$viewTree = F3(
 										_0: {ctor: '_Tuple2', _0: 'justify-content', _1: 'space-between'},
 										_1: {
 											ctor: '::',
-											_0: {ctor: '_Tuple2', _0: 'margin', _1: '5px 0'},
+											_0: {ctor: '_Tuple2', _0: 'margin', _1: '0px 0'},
 											_1: {
 												ctor: '::',
-												_0: {ctor: '_Tuple2', _0: 'border', _1: 'solid 2px'},
-												_1: {ctor: '[]'}
+												_0: {ctor: '_Tuple2', _0: 'outline', _1: 'solid 2px'},
+												_1: {
+													ctor: '::',
+													_0: {ctor: '_Tuple2', _0: 'outline-offset', _1: '-2px'},
+													_1: {ctor: '[]'}
+												}
 											}
 										}
 									}
@@ -14105,7 +14128,7 @@ var _user$project$McpaTreeView$viewTree = F3(
 						_0: _elm_lang$html$Html_Attributes$style(
 							{
 								ctor: '::',
-								_0: {ctor: '_Tuple2', _0: 'margin', _1: '3px'},
+								_0: {ctor: '_Tuple2', _0: 'margin', _1: '3px 6px'},
 								_1: {ctor: '[]'}
 							}),
 						_1: {ctor: '[]'}
@@ -14143,7 +14166,7 @@ var _user$project$McpaTreeView$viewTree = F3(
 								_0: _elm_lang$html$Html_Attributes$style(
 									{
 										ctor: '::',
-										_0: {ctor: '_Tuple2', _0: 'margin', _1: '3px'},
+										_0: {ctor: '_Tuple2', _0: 'margin', _1: '3px 6px'},
 										_1: {ctor: '[]'}
 									}),
 								_1: {ctor: '[]'}
@@ -14195,6 +14218,11 @@ var _user$project$McpaTreeView$viewTree = F3(
 					}),
 				_1: {ctor: '[]'}
 			});
+		var liBorder = 2;
+		var liHeight = 19;
+		var select = function (v) {
+			return _user$project$McpaModel$SelectVariable(v);
+		};
 		var computeColor_ = F2(
 			function (opacity, cladeId) {
 				return A2(
@@ -14224,19 +14252,14 @@ var _user$project$McpaTreeView$viewTree = F3(
 					return _elm_lang$core$Native_Utils.eq(v, 'Env - Adjusted R-squared') || _elm_lang$core$Native_Utils.eq(v, 'BG - Adjusted R-squared');
 				},
 				model.variables));
-		var select = function (_p4) {
-			return _user$project$McpaModel$SelectVariable(
-				A2(
-					_elm_lang$core$Maybe$withDefault,
-					'',
-					A2(
-						_elm_lang$core$Maybe$andThen,
-						function (i) {
-							return A2(_elm_community$list_extra$List_Extra$getAt, i, variables);
-						},
-						_elm_lang$core$Result$toMaybe(
-							_elm_lang$core$String$toInt(_p4)))));
-		};
+		var selectorHeight = function () {
+			var _p4 = model.selectorClosed;
+			if (_p4 === true) {
+				return liHeight;
+			} else {
+				return ((liHeight + liBorder) * _elm_lang$core$List$length(variables)) - liBorder;
+			}
+		}();
 		var variableSelector = A2(
 			_elm_lang$html$Html$div,
 			{
@@ -14244,8 +14267,16 @@ var _user$project$McpaTreeView$viewTree = F3(
 				_0: _elm_lang$html$Html_Attributes$style(
 					{
 						ctor: '::',
-						_0: {ctor: '_Tuple2', _0: 'margin-bottom', _1: '8px'},
-						_1: {ctor: '[]'}
+						_0: {ctor: '_Tuple2', _0: 'position', _1: 'relative'},
+						_1: {
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'display', _1: 'flex'},
+							_1: {
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'justify-content', _1: 'flex-start'},
+								_1: {ctor: '[]'}
+							}
+						}
 					}),
 				_1: {ctor: '[]'}
 			},
@@ -14253,54 +14284,141 @@ var _user$project$McpaTreeView$viewTree = F3(
 				ctor: '::',
 				_0: A2(
 					_elm_lang$html$Html$span,
-					{ctor: '[]'},
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html$text('Predictor: '),
+						_0: _elm_lang$html$Html_Attributes$style(
+							{
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'margin', _1: '0px 4px'},
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('Predictor:'),
 						_1: {ctor: '[]'}
 					}),
 				_1: {
 					ctor: '::',
 					_0: A2(
-						_elm_lang$html$Html$select,
+						_elm_lang$html$Html$div,
+						{ctor: '[]'},
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html_Events$onInput(select),
-							_1: {
-								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$style(
-									{
-										ctor: '::',
-										_0: {ctor: '_Tuple2', _0: 'max-width', _1: '355px'},
-										_1: {ctor: '[]'}
-									}),
-								_1: {ctor: '[]'}
-							}
-						},
-						A2(
-							_elm_lang$core$List$indexedMap,
-							F2(
-								function (i, v) {
-									return A2(
-										_elm_lang$html$Html$option,
+							_0: A2(
+								_elm_lang$html$Html$ul,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$classList(
 										{
 											ctor: '::',
-											_0: _elm_lang$html$Html_Attributes$selected(
-												_elm_lang$core$Native_Utils.eq(v, model.selectedVariable)),
+											_0: {ctor: '_Tuple2', _0: 'drop-down', _1: true},
 											_1: {
 												ctor: '::',
-												_0: _elm_lang$html$Html_Attributes$value(
-													_elm_lang$core$Basics$toString(i)),
+												_0: {
+													ctor: '_Tuple2',
+													_0: 'closed',
+													_1: _elm_lang$core$Native_Utils.eq(model.selectorClosed, true)
+												},
 												_1: {ctor: '[]'}
 											}
-										},
-										{
+										}),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$style(
+											{
+												ctor: '::',
+												_0: {ctor: '_Tuple2', _0: 'width', _1: '300px'},
+												_1: {
+													ctor: '::',
+													_0: {
+														ctor: '_Tuple2',
+														_0: 'height',
+														_1: _elm_lang$core$Basics$toString(selectorHeight)
+													},
+													_1: {ctor: '[]'}
+												}
+											}),
+										_1: {ctor: '[]'}
+									}
+								},
+								_elm_lang$core$List$concat(
+									{
+										ctor: '::',
+										_0: {
 											ctor: '::',
-											_0: _elm_lang$html$Html$text(v),
+											_0: A2(
+												_elm_lang$html$Html$li,
+												{ctor: '[]'},
+												{
+													ctor: '::',
+													_0: A2(
+														_elm_lang$html$Html$a,
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html_Attributes$href('#'),
+															_1: {
+																ctor: '::',
+																_0: _elm_lang$html$Html_Attributes$class('nav-button'),
+																_1: {
+																	ctor: '::',
+																	_0: _elm_lang$html$Html_Events$onClick(_user$project$McpaModel$ToggleSelector),
+																	_1: {ctor: '[]'}
+																}
+															}
+														},
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html$text(model.selectedVariable),
+															_1: {ctor: '[]'}
+														}),
+													_1: {ctor: '[]'}
+												}),
 											_1: {ctor: '[]'}
-										});
-								}),
-							variables)),
+										},
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_elm_lang$core$List$indexedMap,
+												F2(
+													function (i, v) {
+														return A2(
+															_elm_lang$html$Html$li,
+															{ctor: '[]'},
+															{
+																ctor: '::',
+																_0: A2(
+																	_elm_lang$html$Html$a,
+																	{
+																		ctor: '::',
+																		_0: _elm_lang$html$Html_Attributes$href('#'),
+																		_1: {
+																			ctor: '::',
+																			_0: _elm_lang$html$Html_Attributes$value(
+																				_elm_lang$core$Basics$toString(i)),
+																			_1: {
+																				ctor: '::',
+																				_0: _elm_lang$html$Html_Events$onClick(
+																					select(v)),
+																				_1: {ctor: '[]'}
+																			}
+																		}
+																	},
+																	{
+																		ctor: '::',
+																		_0: _elm_lang$html$Html$text(v),
+																		_1: {ctor: '[]'}
+																	}),
+																_1: {ctor: '[]'}
+															});
+													}),
+												variables),
+											_1: {ctor: '[]'}
+										}
+									})),
+							_1: {ctor: '[]'}
+						}),
 					_1: {ctor: '[]'}
 				}
 			});
@@ -14336,7 +14454,11 @@ var _user$project$McpaTreeView$viewTree = F3(
 									_1: {
 										ctor: '::',
 										_0: {ctor: '_Tuple2', _0: 'flex-shrink', _1: '0'},
-										_1: {ctor: '[]'}
+										_1: {
+											ctor: '::',
+											_0: {ctor: '_Tuple2', _0: 'margin', _1: '2px 4px'},
+											_1: {ctor: '[]'}
+										}
 									}
 								}
 							}),
@@ -14363,12 +14485,8 @@ var _user$project$McpaTreeView$viewTree = F3(
 								_0: _elm_lang$html$Html_Attributes$style(
 									{
 										ctor: '::',
-										_0: {ctor: '_Tuple2', _0: 'margin-bottom', _1: '20px'},
-										_1: {
-											ctor: '::',
-											_0: {ctor: '_Tuple2', _0: 'overflow-y', _1: 'auto'},
-											_1: {ctor: '[]'}
-										}
+										_0: {ctor: '_Tuple2', _0: 'overflow-y', _1: 'auto'},
+										_1: {ctor: '[]'}
 									}),
 								_1: {ctor: '[]'}
 							},
@@ -14410,34 +14528,7 @@ var _user$project$McpaTreeView$viewTree = F3(
 									{ctor: '::', _0: gradDefs, _1: treeSvg}),
 								_1: {ctor: '[]'}
 							}),
-						_1: {
-							ctor: '::',
-							_0: A2(
-								_elm_lang$html$Html$p,
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$style(
-										{
-											ctor: '::',
-											_0: {ctor: '_Tuple2', _0: 'width', _1: '560px'},
-											_1: {ctor: '[]'}
-										}),
-									_1: {ctor: '[]'}
-								},
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html$text(
-										A2(
-											_elm_lang$core$Basics_ops['++'],
-											'Node color indicates correlation between sister clades and ',
-											A2(
-												_elm_lang$core$Basics_ops['++'],
-												'the selected predictor.  Selecting a node highlights aggregated ',
-												A2(_elm_lang$core$Basics_ops['++'], 'presence of species of one clade in blue and the other in red.  ', 'Sites where species of both sides are present are purple.')))),
-									_1: {ctor: '[]'}
-								}),
-							_1: {ctor: '[]'}
-						}
+						_1: {ctor: '[]'}
 					}
 				}
 			});
@@ -15137,7 +15228,9 @@ var _user$project$StatsMain$init = {
 		displayedRecords: {ctor: '[]'},
 		scale: A4(_user$project$StatsMain$DataScale, 1, 1, 1, 1),
 		xCol: '',
-		yCol: ''
+		yCol: '',
+		xSelectorClosed: true,
+		ySelectorClosed: true
 	},
 	_1: _user$project$StatsMain$requestStats(
 		{ctor: '_Tuple0'})
@@ -15164,7 +15257,11 @@ var _user$project$StatsMain$Model = function (a) {
 							return function (h) {
 								return function (i) {
 									return function (j) {
-										return {selected: a, flagged: b, selecting: c, variables: d, statNames: e, stats: f, displayedRecords: g, scale: h, xCol: i, yCol: j};
+										return function (k) {
+											return function (l) {
+												return {selected: a, flagged: b, selecting: c, variables: d, statNames: e, stats: f, displayedRecords: g, scale: h, xCol: i, yCol: j, xSelectorClosed: k, ySelectorClosed: l};
+											};
+										};
 									};
 								};
 							};
@@ -15251,6 +15348,38 @@ var _user$project$StatsMain$update = F2(
 	function (msg, model) {
 		var _p24 = msg;
 		switch (_p24.ctor) {
+			case 'ToggleXSelector':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{xSelectorClosed: !model.xSelectorClosed}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'CloseXSelector':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{xSelectorClosed: true}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'ToggleYSelector':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{ySelectorClosed: !model.ySelectorClosed}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'CloseYSelector':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{ySelectorClosed: true}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			case 'ReceivedStats':
 				var _p29 = _p24._0.sitesObserved;
 				var yCol = 'phi';
@@ -15514,6 +15643,10 @@ var _user$project$StatsMain$drawScatter = function (model) {
 var _user$project$StatsMain$ReceivedStats = function (a) {
 	return {ctor: 'ReceivedStats', _0: a};
 };
+var _user$project$StatsMain$CloseYSelector = {ctor: 'CloseYSelector'};
+var _user$project$StatsMain$CloseXSelector = {ctor: 'CloseXSelector'};
+var _user$project$StatsMain$ToggleYSelector = {ctor: 'ToggleYSelector'};
+var _user$project$StatsMain$ToggleXSelector = {ctor: 'ToggleXSelector'};
 var _user$project$StatsMain$YColSelectedMsg = function (a) {
 	return {ctor: 'YColSelectedMsg', _0: a};
 };
@@ -15521,67 +15654,173 @@ var _user$project$StatsMain$XColSelectedMsg = function (a) {
 	return {ctor: 'XColSelectedMsg', _0: a};
 };
 var _user$project$StatsMain$viewPlot = function (model) {
+	var liBorder = 2;
+	var liHeight = 19;
+	var selectorHeight = function () {
+		var _p41 = model.xSelectorClosed;
+		if (_p41 === true) {
+			return liHeight;
+		} else {
+			return ((liHeight + liBorder) * _elm_lang$core$List$length(model.variables)) - liBorder;
+		}
+	}();
 	var variableSelector = F2(
 		function (selected, select) {
 			return A2(
-				_elm_lang$html$Html$select,
+				_elm_lang$html$Html$span,
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html_Events$onInput(select),
+					_0: _elm_lang$html$Html_Attributes$style(
+						{
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'width', _1: '45%'},
+							_1: {ctor: '[]'}
+						}),
 					_1: {ctor: '[]'}
 				},
-				A2(
-					_elm_lang$core$List$map,
-					function (v) {
-						return A2(
-							_elm_lang$html$Html$option,
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$ul,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$classList(
+								{
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'drop-down', _1: true},
+									_1: {
+										ctor: '::',
+										_0: {
+											ctor: '_Tuple2',
+											_0: 'closed',
+											_1: _elm_lang$core$Native_Utils.eq(model.xSelectorClosed, true)
+										},
+										_1: {ctor: '[]'}
+									}
+								}),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$style(
+									{
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: 'width', _1: '230px'},
+										_1: {
+											ctor: '::',
+											_0: {
+												ctor: '_Tuple2',
+												_0: 'height',
+												_1: _elm_lang$core$Basics$toString(selectorHeight)
+											},
+											_1: {ctor: '[]'}
+										}
+									}),
+								_1: {ctor: '[]'}
+							}
+						},
+						_elm_lang$core$List$concat(
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$selected(
-									_elm_lang$core$Native_Utils.eq(v, selected)),
+								_0: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$li,
+										{ctor: '[]'},
+										{
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$a,
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$href('#'),
+													_1: {
+														ctor: '::',
+														_0: _elm_lang$html$Html_Attributes$class('nav-button'),
+														_1: {
+															ctor: '::',
+															_0: _elm_lang$html$Html_Events$onClick(_user$project$StatsMain$ToggleXSelector),
+															_1: {ctor: '[]'}
+														}
+													}
+												},
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html$text(selected),
+													_1: {ctor: '[]'}
+												}),
+											_1: {ctor: '[]'}
+										}),
+									_1: {ctor: '[]'}
+								},
 								_1: {
 									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$value(v),
+									_0: A2(
+										_elm_lang$core$List$map,
+										function (v) {
+											return A2(
+												_elm_lang$html$Html$li,
+												{ctor: '[]'},
+												{
+													ctor: '::',
+													_0: A2(
+														_elm_lang$html$Html$a,
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html_Attributes$href('#'),
+															_1: {
+																ctor: '::',
+																_0: _elm_lang$html$Html_Attributes$value(v),
+																_1: {
+																	ctor: '::',
+																	_0: _elm_lang$html$Html_Events$onClick(
+																		select(v)),
+																	_1: {ctor: '[]'}
+																}
+															}
+														},
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html$text(
+																A2(
+																	_elm_lang$core$Maybe$withDefault,
+																	v,
+																	A2(
+																		_elm_lang$core$Maybe$map,
+																		function (_) {
+																			return _.name;
+																		},
+																		A2(_elm_lang$core$Dict$get, v, model.statNames)))),
+															_1: {ctor: '[]'}
+														}),
+													_1: {ctor: '[]'}
+												});
+										},
+										model.variables),
 									_1: {ctor: '[]'}
 								}
-							},
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html$text(
-									A2(
-										_elm_lang$core$Maybe$withDefault,
-										v,
-										A2(
-											_elm_lang$core$Maybe$map,
-											function (_) {
-												return _.name;
-											},
-											A2(_elm_lang$core$Dict$get, v, model.statNames)))),
-								_1: {ctor: '[]'}
-							});
-					},
-					model.variables));
+							})),
+					_1: {ctor: '[]'}
+				});
 		});
 	var selectionBox = A2(
 		_elm_lang$core$List$map,
-		function (_p41) {
-			var _p42 = _p41;
-			var _p46 = _p42._1._0;
-			var _p45 = _p42._0._0;
-			var _p43 = {
-				ctor: '_Tuple2',
-				_0: _elm_lang$core$Basics$abs(_p46.x - _p45.x),
-				_1: _elm_lang$core$Basics$abs(_p46.y - _p45.y)
-			};
-			var w = _p43._0;
-			var h = _p43._1;
+		function (_p42) {
+			var _p43 = _p42;
+			var _p47 = _p43._1._0;
+			var _p46 = _p43._0._0;
 			var _p44 = {
 				ctor: '_Tuple2',
-				_0: A2(_elm_lang$core$Basics$min, _p45.x, _p46.x),
-				_1: A2(_elm_lang$core$Basics$min, _p45.y, _p46.y)
+				_0: _elm_lang$core$Basics$abs(_p47.x - _p46.x),
+				_1: _elm_lang$core$Basics$abs(_p47.y - _p46.y)
 			};
-			var x_ = _p44._0;
-			var y_ = _p44._1;
+			var w = _p44._0;
+			var h = _p44._1;
+			var _p45 = {
+				ctor: '_Tuple2',
+				_0: A2(_elm_lang$core$Basics$min, _p46.x, _p47.x),
+				_1: A2(_elm_lang$core$Basics$min, _p46.y, _p47.y)
+			};
+			var x_ = _p45._0;
+			var y_ = _p45._1;
 			return A2(
 				_elm_lang$svg$Svg$rect,
 				{
@@ -15647,8 +15886,20 @@ var _user$project$StatsMain$viewPlot = function (model) {
 						_0: _elm_lang$html$Html_Attributes$style(
 							{
 								ctor: '::',
-								_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
-								_1: {ctor: '[]'}
+								_0: {ctor: '_Tuple2', _0: 'position', _1: 'relative'},
+								_1: {
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'display', _1: 'flex'},
+									_1: {
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: 'justify-content', _1: 'space-between'},
+										_1: {
+											ctor: '::',
+											_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
+											_1: {ctor: '[]'}
+										}
+									}
+								}
 							}),
 						_1: {ctor: '[]'}
 					},
@@ -15657,7 +15908,23 @@ var _user$project$StatsMain$viewPlot = function (model) {
 						_0: A2(variableSelector, model.yCol, _user$project$StatsMain$YColSelectedMsg),
 						_1: {
 							ctor: '::',
-							_0: _elm_lang$html$Html$text(' vs '),
+							_0: A2(
+								_elm_lang$html$Html$span,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$style(
+										{
+											ctor: '::',
+											_0: {ctor: '_Tuple2', _0: 'width', _1: '10%'},
+											_1: {ctor: '[]'}
+										}),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('vs'),
+									_1: {ctor: '[]'}
+								}),
 							_1: {
 								ctor: '::',
 								_0: A2(variableSelector, model.xCol, _user$project$StatsMain$XColSelectedMsg),
@@ -15693,43 +15960,7 @@ var _user$project$StatsMain$viewPlot = function (model) {
 							_elm_lang$core$Basics_ops['++'],
 							_user$project$StatsMain$drawScatter(model),
 							selectionBox)),
-					_1: {
-						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$p,
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$style(
-									{
-										ctor: '::',
-										_0: {ctor: '_Tuple2', _0: 'width', _1: '500px'},
-										_1: {ctor: '[]'}
-									}),
-								_1: {ctor: '[]'}
-							},
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html$text(
-									A2(
-										_elm_lang$core$Basics_ops['++'],
-										'The scatter plot shows relationships between site based statistics; ',
-										A2(
-											_elm_lang$core$Basics_ops['++'],
-											'each dot represents a single site.  If sites in the map are highlighted, ',
-											A2(
-												_elm_lang$core$Basics_ops['++'],
-												'the corresponding sites are highlighted in the same color in the scatter plot. ',
-												A2(
-													_elm_lang$core$Basics_ops['++'],
-													'You can brush sites in the plot by clicking and dragging to create a selection box. ',
-													A2(
-														_elm_lang$core$Basics_ops['++'],
-														'Doing so will highlight the selected points as well as those sites on the map and ',
-														A2(_elm_lang$core$Basics_ops['++'], 'the species present at those sites in the tree.  Use the two drop down boxes to select ', 'the metrics to use for the X and Y axes.'))))))),
-								_1: {ctor: '[]'}
-							}),
-						_1: {ctor: '[]'}
-					}
+					_1: {ctor: '[]'}
 				}
 			}
 		});
@@ -16325,7 +16556,116 @@ var _user$project$StatsTreeMap$view = function (_p13) {
 						_elm_lang$html$Html$map,
 						_user$project$StatsTreeMap$McpaMsg,
 						A3(_user$project$McpaTreeView$viewTree, _p16, true, selectData)),
-					_1: {ctor: '[]'}
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$style(
+									{
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: 'margin', _1: '0 12px'},
+										_1: {ctor: '[]'}
+									}),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$h3,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$style(
+											{
+												ctor: '::',
+												_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
+												_1: {ctor: '[]'}
+											}),
+										_1: {ctor: '[]'}
+									},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text('Sites Map'),
+										_1: {ctor: '[]'}
+									}),
+								_1: {
+									ctor: '::',
+									_0: legend,
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$div,
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$class('leaflet-map'),
+												_1: {
+													ctor: '::',
+													_0: A2(_elm_lang$html$Html_Attributes$attribute, 'data-map-sites', selectedSiteIds),
+													_1: {
+														ctor: '::',
+														_0: A2(
+															_elm_lang$html$Html_Attributes$attribute,
+															'data-map-column',
+															A2(
+																_elm_lang$core$Maybe$withDefault,
+																'',
+																A2(_elm_lang$core$Maybe$map, _elm_lang$core$Basics$toString, _p16.selectedNode))),
+														_1: {
+															ctor: '::',
+															_0: _elm_lang$html$Html_Attributes$style(
+																{
+																	ctor: '::',
+																	_0: {ctor: '_Tuple2', _0: 'width', _1: '625px'},
+																	_1: {
+																		ctor: '::',
+																		_0: {ctor: '_Tuple2', _0: 'height', _1: '500px'},
+																		_1: {ctor: '[]'}
+																	}
+																}),
+															_1: {ctor: '[]'}
+														}
+													}
+												}
+											},
+											{ctor: '[]'}),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$p,
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$style(
+														{
+															ctor: '::',
+															_0: {ctor: '_Tuple2', _0: 'width', _1: '625px'},
+															_1: {ctor: '[]'}
+														}),
+													_1: {ctor: '[]'}
+												},
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html$text(
+														A2(
+															_elm_lang$core$Basics_ops['++'],
+															'The map shows sites where the selected species are present. ',
+															A2(_elm_lang$core$Basics_ops['++'], 'Use the select by bounding box or by polygon tools to ', 'highlight in the tree which species are present at those selected sites.'))),
+													_1: {ctor: '[]'}
+												}),
+											_1: {ctor: '[]'}
+										}
+									}
+								}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$map,
+								_user$project$StatsTreeMap$StatsMsg,
+								_user$project$StatsMain$viewPlot(_p17)),
+							_1: {ctor: '[]'}
+						}
+					}
 				}),
 			_1: {ctor: '[]'}
 		});
@@ -16415,6 +16755,16 @@ var _user$project$Package$openTree = _elm_lang$core$Native_Platform.outgoingPort
 	function (v) {
 		return null;
 	});
+var _user$project$Package$openMap = _elm_lang$core$Native_Platform.outgoingPort(
+	'openMap',
+	function (v) {
+		return null;
+	});
+var _user$project$Package$openScatter = _elm_lang$core$Native_Platform.outgoingPort(
+	'openScatter',
+	function (v) {
+		return null;
+	});
 var _user$project$Package$update = F2(
 	function (msg, model) {
 		var _p0 = msg;
@@ -16427,14 +16777,29 @@ var _user$project$Package$update = F2(
 						{ctor: '_Tuple0'})
 				};
 			case 'OpenMap':
-				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				return {
+					ctor: '_Tuple2',
+					_0: model,
+					_1: _user$project$Package$openMap(
+						{ctor: '_Tuple0'})
+				};
 			case 'OpenScatter':
-				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				return {
+					ctor: '_Tuple2',
+					_0: model,
+					_1: _user$project$Package$openScatter(
+						{ctor: '_Tuple0'})
+				};
 			case 'OpenProjection':
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			default:
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 		}
+	});
+var _user$project$Package$openProjection = _elm_lang$core$Native_Platform.outgoingPort(
+	'openProjection',
+	function (v) {
+		return null;
 	});
 var _user$project$Package$Model = function (a) {
 	return {mcpaModel: a};

@@ -40,25 +40,43 @@ var lifemapper = sage2_webview_appCoreV01_extendWebview({
 		this.resizeEvents = "continuous"; // Recommended not to change. Options: never, continuous, onfinish
 
 		// Path / URL of the page you want to show
+		// TODO: so much ugliness to fix
 		if (data.customLaunchParams) {
 			console.log(data.customLaunchParams);
 			switch (data.customLaunchParams.view) {
+				case "occmap":
+					console.log("Launching Lifemapper app as \"occmap\"");
+					this.sendResize(752, 600);
+					this.changeURL(this.resrcPath + "/webapp/mapView.html", false);
+					//this.changeURL(this.resrcPath + "/webapp/statsTreeMap.html", false);
+					break;
 				case "tree":
-					console.log("Launching Lifemapper app as \"tree\"")
-					this.sendResize(688, 1400)
+					console.log("Launching Lifemapper app as \"tree\"");
+					this.sendResize(672, 1138);
 					this.changeURL(this.resrcPath + "/webapp/treeView.html", false);
 					break;
+				case "scatter":
+					console.log("Launching Lifemapper app as \"scatter\"");
+					this.sendResize(700, 700);
+					this.changeURL(this.resrcPath + "/webapp/scatterView.html", false);
+					break;
+				case "biotaphy":
+					console.log("Launching Lifemapper app as \"biotaphy\"");
+					this.sendResize(1200, 800);
+					this.changeURL(this.resrcPath + "/heuchera_demo/index.html", false);
+					break;
 				default:
-					console.log("Launching Lifemapper app with no parameters")
-					this.sendResize(560, 128)
+					console.log("Launching Lifemapper app with no parameters");
+					this.sendResize(560, 128);
 					this.changeURL(this.resrcPath + "/webapp/packageView.html", false);
 					break;
 			}
 		}
 		else {
-			console.log("Launching Lifemapper app with no parameters")
-			this.sendResize(560, 128)
+			console.log("Launching Lifemapper app with no parameters");
+			this.sendResize(560, 128);
 			this.changeURL(this.resrcPath + "/webapp/packageView.html", false);
+			//this.changeURL(this.resrcPath + "/webpageOLD/index.html", false);
 		}
 	},
 	load: function(date) {
@@ -91,7 +109,7 @@ var lifemapper = sage2_webview_appCoreV01_extendWebview({
 		// });
 		
 		// TODO: remove these (keeping for now as reference)
-		/*entries.push({
+		entries.push({
 			description: "Set Counter value",
 			callback: "setCounterValueInPage", // function defined below
 			inputField: true, // Takes typed input from UI
@@ -102,13 +120,29 @@ var lifemapper = sage2_webview_appCoreV01_extendWebview({
 			description: "Force state update",
 			callback: "giveContainerStateToWebpage", // function defined below
 			parameters: {},
-		});*/
+		});
 
 		entries.push({
 			description: "Open a phylogenetic tree",
 			callback: "openTreeCallback", // function defined below
 			parameters: {},
 		});
+		entries.push({
+			description: "Open an occurrence map",
+			callback: "openMapCallback", // function defined below
+			parameters: {},
+		});
+		entries.push({
+			description: "Open a scatter plot",
+			callback: "openScatterCallback", // function defined below
+			parameters: {},
+		});
+		entries.push({
+			description: "Open BiotaPhy",
+			callback: "openBiotaPhyCallback", // function defined below
+			parameters: {},
+		});
+
 		return entries;
 	},
 
@@ -129,11 +163,59 @@ var lifemapper = sage2_webview_appCoreV01_extendWebview({
 	// Add optional functions
 
 	openTreeCallback: function() {
-		console.log("Opening phylogenetic tree app")
-		this.launchAppWithValues("Lifemapper-SAGE2-App", { view : "tree" })
+		console.log("Opening phylogenetic tree app");
+		this.launchAppWithValues("Lifemapper-SAGE2-App", { view : "tree" });
 	},
 
-	askParent: function(func, data) {
+	openMapCallback: function() {
+		console.log("Opening occurrence map app");
+		this.launchAppWithValues("Lifemapper-SAGE2-App", { view : "occmap" });
+	},
+
+	openScatterCallback: function() {
+		console.log("Opening scatter plot app");
+		this.launchAppWithValues("Lifemapper-SAGE2-App", { view : "scatter" });
+	},
+
+	openBiotaPhyCallback: function() {
+		console.log("Opening a BiotaPhy app")
+		this.launchAppWithValues("Lifemapper-SAGE2-App", { view : "biotaphy" })
+	},
+
+	suggestNodesForSites: function(data) {
+		console.log("Suggesting nodes for sites");
+		this.sendDataToParentApp("propagateNodesForSites", JSON.stringify(data));
+	},
+
+	suggestSitesForNode: function(data) {
+		console.log("Suggesting sites for node");
+		console.log("Received this piece a junkah:");
+		console.log(JSON.stringify(data))
+		console.log("End of junk")
+		this.sendDataToParentApp("propagateSitesForNode", JSON.stringify(data));
+	},
+
+	propagateNodesForSites: function(data) {
+		console.log("Propagating nodes for sites");
+		this.sendDataToChildrenApps("receiveNodesForSites", data);
+	},
+
+	propagateSitesForNode: function(data) {
+		console.log("Propagating sites for node");
+		this.sendDataToChildrenApps("receiveSitesForNode", data);
+	},
+
+	receiveNodesForSites: function(data) {
+		console.log("Receiving nodes for sites");
+		this.callFunctionInWebpage("receiveNodesForSites", data);
+	},
+
+	receiveSitesForNode: function(data) {
+		console.log("Receiving sites for node");
+		this.callFunctionInWebpage("receiveSitesForNode", data);
+	},
+
+	askParent: function(func, data) { // TODO: not in use? Remove?
 		data._sender = this.id; // Provide an address for the parent to reply to
 		this.sendDataToParentApp(func, data);
 	},

@@ -170,7 +170,7 @@ view { mcpaModel, statsModel } =
             [ Html.div [ A.style [ ( "display", "flex" ), ( "justify-content", "space-around" ) ] ]
                 -- LEFT COLUMN
                 [ viewTree mcpaModel True selectData |> Html.map McpaMsg
-                {-- MIDDLE COLUMN
+                -- MIDDLE COLUMN
                 , Html.div
                     [ A.style [ ( "margin", "0 12px" ) ] ]
                     [ Html.h3 [ A.style [ ( "text-align", "center" )] ]

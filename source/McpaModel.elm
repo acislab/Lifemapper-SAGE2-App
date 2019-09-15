@@ -12,9 +12,7 @@
 
    This program is distributed in the hope that it will be useful, but
    WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  Sebbbwwassatfart
-   tpft
-   wadwdwdawsde the GNU
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
    General Public License for more details.
 
    You should have received a copy of the GNU General Public License
@@ -29,7 +27,6 @@ module McpaModel exposing (..)
 import DecodeTree exposing (Tree)
 import ParseNexusTree exposing (parseNexusTree)
 import TreeMetrics exposing (..)
-
 
 type alias Flags =
     { data : String
@@ -53,6 +50,7 @@ type alias Model data =
     , selectedVariable : String
     , selectedNode : Maybe Int
     , showBranchLengths : Bool
+    , selectorClosed : Bool -- THIS IS AWFUL
     }
 
 
@@ -90,6 +88,7 @@ init parseData flags =
           , selectedNode = Nothing
           , showBranchLengths = False
           , data = data
+          , selectorClosed = True
           }
         , Cmd.none
         )
@@ -104,13 +103,19 @@ type Msg
     = SelectVariable String
     | ToggleShowLengths
     | SelectNode Int
+    | ToggleSelector -- AWFUL
+    | CloseSelector -- AWFUL
 
 
 update : Msg -> Model data -> ( Model data, Cmd Msg )
 update msg model =
     case msg of
+        ToggleSelector ->
+            ( { model | selectorClosed = (not model.selectorClosed) }, Cmd.none )
+        CloseSelector ->
+            ( { model | selectorClosed = True }, Cmd.none )
         SelectVariable v ->
-            ( { model | selectedVariable = v }, Cmd.none )
+            ( { model | selectedVariable = v, selectorClosed = True }, Cmd.none )
 
         ToggleShowLengths ->
             ( { model | showBranchLengths = not model.showBranchLengths }, Cmd.none )

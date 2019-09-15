@@ -23,9 +23,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 "use strict";
 
-
-var maps = {};
-var mapLayers = {};
+//var maps = {};
+//var mapLayers = {};
 
 document.onmousemove = document.onmouseup = document.onmousedown = function(event) {
     const plot = document.getElementById("plot");
@@ -47,6 +46,7 @@ document.onmousemove = document.onmouseup = document.onmousedown = function(even
     }
 };
 
+/*
 function configureMap(element) {
     var map = maps[element._leaflet_id];
     if (map == null) return;
@@ -81,6 +81,7 @@ function configureMap(element) {
         layers[0].setStyle(style(sites, dataColumn));
     }
 }
+*/
 
 function style(sites, dataColumn) {
     return function(feature) {
@@ -133,7 +134,7 @@ function style(sites, dataColumn) {
 //         );
 //     }, [])
 // );
-
+/*
 var bbox = turf.bbox(ancPam);
 
 var observer = new MutationObserver(function(mutations) {
@@ -220,17 +221,19 @@ observer.observe(document.body, {
     attributeFilter: ["data-map-sites", "data-map-column"],
     attributeOldValue: true
 });
+*/
 
-// Elm init
 var node = document.getElementById("app");
-while(node.firstChild) { node.removeChild(node.firstChild); }
-
-// TODO: get mcpaMatrix and taxonTree from lifemapper.js?
-
-var app = Elm.MapView.embed(node, {
+while(node.firstChild) { node.removeChild(node.firstChild);}
+var app = Elm.ScatterView.embed(node, {
     data: mcpaMatrix,
     taxonTree: taxonTree
 });
+
+//var app = Elm.StatsTreeMap.fullscreen({
+//    data: mcpaMatrix,
+//    taxonTree: taxonTree
+//});
 
 app.ports.statsForSites.send({
     sitesObserved: sitesObserved.features.map(function(feature) {
@@ -239,5 +242,3 @@ app.ports.statsForSites.send({
     statNameLookup: Object.entries(statNameLookup)
 });
 
-// SAGE2 init
-SAGE2_AppState.titleUpdate("Occurrence Map");

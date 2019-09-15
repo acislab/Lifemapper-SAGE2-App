@@ -22,7 +22,7 @@
 -}
 
 
-port module TreeView exposing (..)
+port module MapView exposing (..)
 
 import Html
 import Html.Attributes as A
@@ -33,6 +33,7 @@ import McpaModel
 import ParseMcpa exposing (McpaData, parseMcpa)
 import McpaTreeView exposing (viewTree)
 import StatsMain
+import Debug
 
 
 port requestSitesForNode : Int -> Cmd msg
@@ -46,7 +47,8 @@ port requestNodesForSites : List Int -> Cmd msg
 
 port nodesForSites : (( List Int, List Int ) -> msg) -> Sub msg
 
-port selectNode : (Int -> msg) -> Sub msg
+
+--port selectNode : Int -> Sub msg
 
 type alias Model =
     { mcpaModel : McpaModel.Model McpaData
@@ -91,7 +93,7 @@ update msg ({ mcpaModel, statsModel } as model) =
                         |> Dict.fromList
             in
                 ( { model | statsModel = { statsModel | flagged = flagged, selected = Set.empty } }, Cmd.none )
-
+        
         McpaMsg ((McpaModel.SelectNode n) as msg_) ->
             let
                 ( mcpaModel, cmd ) =
@@ -144,10 +146,52 @@ view { mcpaModel, statsModel } =
             Html.div
                 [ A.style [ ( "width", "12px" ), ( "height", "12px" ), ( "background-color", color ), ( "display", "inline-block" ) ] ]
                 []
+
+        legend =
+            case mcpaModel.selectedNode of
+                Just _ ->
+                    Html.div [ A.style [ ( "display", "flex" ), ( "justify-content", "space-around" ) ] ]
+                        [ Html.div [ A.style [ ( "margin-bottom", "8px" ) ] ] [ Html.text "Clade 1 = ", block "blue" ]
+                        , Html.div [ A.style [ ( "margin-bottom", "8px" ) ] ] [ Html.text "Clade 2 = ", block "red" ]
+                        , Html.div [ A.style [ ( "margin-bottom", "8px" ) ] ] [ Html.text "Both clades = ", block "purple" ]
+                        ]
+
+                Nothing ->
+                    if not <| Set.isEmpty statsModel.selected then
+                        Html.div [ A.style [ ( "display", "flex" ), ( "justify-content", "space-around" ) ] ]
+                            [ Html.div [ A.style [ ( "margin-bottom", "8px" ) ] ]
+                                [ Html.text ("Species present in " ++ (statsModel.selected |> Set.size |> toString) ++ " selected sites = ")
+                                , block "red"
+                                ]
+                            ]
+                    else
+                        Html.div [ A.style [ ( "display", "flex" ), ( "justify-content", "space-around" ) ] ]
+                            [ Html.div [ A.style [ ( "margin-bottom", "8px" ) ] ]
+                                [ Html.text "Select areas from map or plot, or nodes from tree." ]
+                            ]
     in
         Html.div [ A.style [ ( "font-family", "sans-serif" ) ] ]
             [ Html.div [ A.style [ ( "display", "flex" ), ( "justify-content", "space-around" ) ] ]
-                [ viewTree mcpaModel True selectData |> Html.map McpaMsg ]
+                [ Html.div
+                    [ A.style [ ( "margin", "0 12px" ) ] ]
+                    [ {--Html.h3 [ A.style [ ( "text-align", "center" )] ]
+                        [ Html.text "Sites Map" ]
+                    , legend
+                    ,--} Html.div
+                        [ A.class "leaflet-map"
+                        , A.attribute "data-map-sites" selectedSiteIds
+                        , A.attribute "data-map-column" (mcpaModel.selectedNode |> Maybe.map toString |> Maybe.withDefault "")
+                        , A.style [ ( "width", "625px" ), ( "height", "500px" ) ]
+                        ]
+                        []
+                    {--, Html.p [ A.style [ ( "width", "625px" ) ] ]
+                        [ Html.text <|
+                            "The map shows sites where the selected species are present. "
+                                ++ "Use the select by bounding box or by polygon tools to "
+                                ++ "highlight in the tree which species are present at those selected sites."
+                        ]--}
+                    ]
+                ]
             ]
 
 
@@ -164,7 +208,6 @@ init flags =
         , Cmd.batch
             [ Cmd.map McpaMsg mcpaCmd
             , Cmd.map StatsMsg statsCmd
-            --, initialized ()
             ]
         )
 
@@ -175,7 +218,6 @@ subscriptions model =
     , StatsMain.subscriptions model.statsModel |> Sub.map StatsMsg
     , sitesForNode SetSelectedSites
     , nodesForSites SetSelectedNodes
-    --, selectNode SetNode
     ]
         |> Sub.batch
 

@@ -238,4 +238,3 @@ app.ports.statsForSites.send({
     }),
     statNameLookup: Object.entries(statNameLookup)
 });
-

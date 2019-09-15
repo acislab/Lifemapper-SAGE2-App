@@ -27,11 +27,11 @@ module McpaTreeView exposing (viewTree)
 import Html
 import Html.Attributes as A
 import Html.Events
+import LinearTreeView exposing (computeColor, drawTree, gradientDefinitions)
 import List.Extra as List
+import McpaModel exposing (..)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
-import McpaModel exposing (..)
-import LinearTreeView exposing (computeColor, drawTree, gradientDefinitions)
 
 
 viewTree : Model data -> Bool -> (Int -> Maybe Float) -> Html.Html Msg
@@ -64,27 +64,66 @@ viewTree model redBlue selectData =
         gradDefs =
             gradientDefinitions grads
 
-        select =
-            String.toInt
+        select v =
+            SelectVariable v
+            {--String.toInt string
                 >> Result.toMaybe
                 >> Maybe.andThen (\i -> List.getAt i variables)
                 >> Maybe.withDefault ""
-                >> SelectVariable
+                >> SelectVariable--}
+
+        liHeight =
+            19
+
+        liBorder =
+            2
+
+        selectorHeight =
+            case model.selectorClosed of
+                True ->
+                    liHeight
+                False ->
+                    (liHeight + liBorder) * List.length variables - liBorder
 
         variableSelector =
-            Html.div [ A.style [ ( "margin-bottom", "8px" ) ] ]
-                [ Html.span [] [ Html.text "Predictor: " ]
-                , Html.select [ Html.Events.onInput select, A.style [ ( "max-width", "355px" ) ] ]
-                    (variables
-                        |> List.indexedMap
-                            (\i v ->
-                                Html.option
-                                    [ A.selected (v == model.selectedVariable)
-                                    , A.value (toString i)
+            Html.div
+                [ A.style
+                    [ ( "position", "relative" )
+                    , ( "display", "flex" )
+                    , ( "justify-content", "flex-start" )
+                    ]
+                ]
+                [ Html.span [ A.style [ ( "margin", "0px 4px" ) ] ] [ Html.text "Predictor:" ]
+                , Html.div []
+                    [ Html.ul
+                        [ A.classList [ ("drop-down", True), ("closed", (model.selectorClosed == True)) ]
+                        , A.style [ ( "width", "300px" ), ( "height", toString selectorHeight ) ]
+                        ]
+                        (List.concat
+                            [ [ Html.li []
+                                    [ Html.a
+                                        [ A.href "#"
+                                        , A.class "nav-button"
+                                        , Html.Events.onClick ToggleSelector
+                                        ]
+                                        [ Html.text model.selectedVariable ]
                                     ]
-                                    [ Html.text v ]
-                            )
-                    )
+                              ]
+                            , variables
+                                |> List.indexedMap
+                                    (\i v ->
+                                        Html.li []
+                                            [ Html.a
+                                                [ A.href "#"
+                                                , A.value (toString i)
+                                                , Html.Events.onClick (select v)
+                                                ]
+                                                [ Html.text v ]
+                                            ]
+                                    )
+                            ]
+                        )
+                    ]
                 ]
 
         toggleBranchLengths =
@@ -107,49 +146,54 @@ viewTree model redBlue selectData =
         legend =
             Html.div
                 [ A.style
-                    [ ( "width", "558px" )
+                    [ ( "width", "100%" )
                     , ( "background", "linear-gradient(to right, " ++ color0 ++ ", " ++ color1 ++ ")" )
                     , ( "display", "flex" )
                     , ( "flex-direction", "row" )
                     , ( "justify-content", "space-between" )
-                    , ( "margin", "5px 0" )
-                    , ( "border", "solid 2px" )
+                    , ( "margin", "0px 0" )
+                    , ( "outline", "solid 2px" )
+                    , ( "outline-offset", "-2px" )
                     ]
                 ]
-                [ Html.p [ A.style [ ( "margin", "3px" ) ] ] [ Html.text "0.0" ]
+                [ Html.p [ A.style [ ( "margin", "3px 6px" ) ] ] [ Html.text "0.0" ]
                 , Html.p [ A.style [ ( "margin", "3px" ) ] ] [ Html.text "Semipartial Correlation b/w Node and Selected Predictor" ]
-                , Html.p [ A.style [ ( "margin", "3px" ) ] ] [ Html.text "1.0" ]
+                , Html.p [ A.style [ ( "margin", "3px 6px" ) ] ] [ Html.text "1.0" ]
                 ]
     in
-        Html.div
-            [ A.style [ ( "display", "flex" ), ( "flex-direction", "column" ) ] ]
-            [ {--Html.h3 [ A.style [ ( "text-align", "center" ) ] ]
+    Html.div
+        [ A.style [ ( "display", "flex" ), ( "flex-direction", "column" ) ] ]
+        [ {--Html.h3 [ A.style [ ( "text-align", "center" ) ] ]
                 [ Html.text "Phylogenetic Tree" ]
-            ,--} Html.div
-                [ A.style
-                    [ ( "display", "flex" )
-                    , ( "justify-content", "space-between" )
-                    , ( "flex-shrink", "0" )
-                    ]
+            ,--}
+          Html.div
+            [ A.style
+                [ ( "display", "flex" )
+                , ( "justify-content", "space-between" )
+                , ( "flex-shrink", "0" )
+                , ( "margin", "2px 4px" )
                 ]
-                [ variableSelector, toggleBranchLengths ]
-            , legend
-            , Html.div [ A.style [ ( "margin-bottom", "20px" ), ( "overflow-y", "auto" ) ] ]
-                [ svg
-                    [ width "560"
-                    , height (14 * treeHeight |> toString)
-                    , viewBox ("0 0 40 " ++ (toString treeHeight))
-                    , A.style [ ( "background", "#000" ), ( "font-family", "sans-serif" ) ]
-                      -- , Html.Events.onClick JumpUp
-                    ]
-                    -- (clickBox :: treeSvg)
-                    (gradDefs :: treeSvg)
+            ]
+            [ variableSelector, toggleBranchLengths ]
+        , legend
+        , Html.div [ A.style [ ( "overflow-y", "auto" ) ] ]
+            [ svg
+                [ width "560"
+                , height (14 * treeHeight |> toString)
+                , viewBox ("0 0 40 " ++ toString treeHeight)
+                , A.style [ ( "background", "#000" ), ( "font-family", "sans-serif" ) ]
+
+                -- , Html.Events.onClick JumpUp
                 ]
-            {--, Html.p [ A.style [ ( "width", "560px" ) ] ]
+                -- (clickBox :: treeSvg)
+                (gradDefs :: treeSvg)
+            ]
+
+        {--, Html.p [ A.style [ ( "width", "560px" ) ] ]
                 [ Html.text <|
                     "Node color indicates correlation between sister clades and "
                         ++ "the selected predictor.  Selecting a node highlights aggregated "
                         ++ "presence of species of one clade in blue and the other in red.  "
                         ++ "Sites where species of both sides are present are purple."
                 ]--}
-            ]
+        ]
