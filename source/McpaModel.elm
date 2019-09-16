@@ -28,11 +28,11 @@ import DecodeTree exposing (Tree)
 import ParseNexusTree exposing (parseNexusTree)
 import TreeMetrics exposing (..)
 
+
 type alias Flags =
     { data : String
     , taxonTree : String
     }
-
 
 type alias TreeInfo =
     { root : Tree
@@ -40,7 +40,6 @@ type alias TreeInfo =
     , depth : Int
     , breadth : Int
     }
-
 
 type alias Model data =
     { treeInfo : TreeInfo
@@ -50,7 +49,6 @@ type alias Model data =
     , selectedVariable : String
     , selectedNode : Maybe Int
     , showBranchLengths : Bool
-    , selectorClosed : Bool -- THIS IS AWFUL
     }
 
 
@@ -88,7 +86,6 @@ init parseData flags =
           , selectedNode = Nothing
           , showBranchLengths = False
           , data = data
-          , selectorClosed = True
           }
         , Cmd.none
         )
@@ -100,25 +97,11 @@ subscriptions model =
 
 
 type Msg
-    = SelectVariable String
-    | ToggleShowLengths
-    | SelectNode Int
-    | ToggleSelector -- AWFUL
-    | CloseSelector -- AWFUL
+    = SelectNode Int
 
 
 update : Msg -> Model data -> ( Model data, Cmd Msg )
 update msg model =
     case msg of
-        ToggleSelector ->
-            ( { model | selectorClosed = (not model.selectorClosed) }, Cmd.none )
-        CloseSelector ->
-            ( { model | selectorClosed = True }, Cmd.none )
-        SelectVariable v ->
-            ( { model | selectedVariable = v, selectorClosed = True }, Cmd.none )
-
-        ToggleShowLengths ->
-            ( { model | showBranchLengths = not model.showBranchLengths }, Cmd.none )
-
         SelectNode cladeId ->
             ( { model | selectedNode = Just cladeId }, Cmd.none )

@@ -14,7 +14,7 @@ boom.tar.gz: boom/elm/boomMain.js boom/elm/subsetpam.js boom/*
 	echo "BOOM-TEST" > boom/Version
 	tar -zcvf boom.tar.gz --exclude=boomFlagsOverride.js boom
 
-mcpa.tar.gz: mcpa/elm/TreeView.js mcpa/elm/StatsTreeMap.js mcpa/elm/MapView.js mcpa/elm/ScatterMain.js mcpa/elm/Package.js mcpa/*
+mcpa.tar.gz: mcpa/elm/TreeView.js mcpa/elm/MapView.js mcpa/elm/ScatterMain.js mcpa/elm/Package.js mcpa/*
 	#git describe --tags > mcpa/VERSION
 	echo "MCPA-TEST" > mcpa/VERSION
 	tar -zcvf mcpa.tar.gz mcpa
@@ -37,8 +37,8 @@ mcpa/elm/Package.js: source/Package.elm source/*
 #mcpa/elm/StatsHeatMap.js: source/Decoder.elm source/*
 #	elm-make source/StatsHeatMap.elm $(ELMFLAGS) --output=mcpa/elm/StatsHeatMap.js
 
-mcpa/elm/StatsTreeMap.js: source/Decoder.elm source/*
-	elm-make source/StatsTreeMap.elm $(ELMFLAGS) --output=mcpa/elm/StatsTreeMap.js
+#mcpa/elm/StatsTreeMap.js: source/Decoder.elm source/*
+#	elm-make source/StatsTreeMap.elm $(ELMFLAGS) --output=mcpa/elm/StatsTreeMap.js
 
 mcpa/elm/TreeView.js: source/Decoder.elm source/*
 	elm-make source/TreeView.elm $(ELMFLAGS) --output=mcpa/elm/TreeView.js

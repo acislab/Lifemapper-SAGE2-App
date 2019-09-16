@@ -102,13 +102,6 @@ update msg ({ mcpaModel, statsModel } as model) =
                 { model | mcpaModel = { mcpaModel | flaggedNodes = ( [], [] ) } }
                     ! [ Cmd.map McpaMsg cmd, requestSitesForNode n ]
 
-        McpaMsg msg_ ->
-            let
-                ( mcpaModel, cmd ) =
-                    McpaModel.update msg_ model.mcpaModel
-            in
-                ( { model | mcpaModel = mcpaModel }, Cmd.map McpaMsg cmd )
-
         StatsMsg msg_ ->
             let
                 ( statsModel, cmd ) =

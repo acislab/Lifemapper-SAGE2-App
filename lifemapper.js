@@ -48,7 +48,6 @@ var lifemapper = sage2_webview_appCoreV01_extendWebview({
 					console.log("Launching Lifemapper app as \"occmap\"");
 					this.sendResize(752, 600);
 					this.changeURL(this.resrcPath + "/webapp/mapView.html", false);
-					//this.changeURL(this.resrcPath + "/webapp/statsTreeMap.html", false);
 					break;
 				case "tree":
 					console.log("Launching Lifemapper app as \"tree\"");
@@ -59,11 +58,6 @@ var lifemapper = sage2_webview_appCoreV01_extendWebview({
 					console.log("Launching Lifemapper app as \"scatter\"");
 					this.sendResize(700, 700);
 					this.changeURL(this.resrcPath + "/webapp/scatterView.html", false);
-					break;
-				case "biotaphy":
-					console.log("Launching Lifemapper app as \"biotaphy\"");
-					this.sendResize(1200, 800);
-					this.changeURL(this.resrcPath + "/heuchera_demo/index.html", false);
 					break;
 				default:
 					console.log("Launching Lifemapper app with no parameters");
@@ -137,11 +131,6 @@ var lifemapper = sage2_webview_appCoreV01_extendWebview({
 			callback: "openScatterCallback", // function defined below
 			parameters: {},
 		});
-		entries.push({
-			description: "Open BiotaPhy",
-			callback: "openBiotaPhyCallback", // function defined below
-			parameters: {},
-		});
 
 		return entries;
 	},
@@ -175,11 +164,6 @@ var lifemapper = sage2_webview_appCoreV01_extendWebview({
 	openScatterCallback: function() {
 		console.log("Opening scatter plot app");
 		this.launchAppWithValues("Lifemapper-SAGE2-App", { view : "scatter" });
-	},
-
-	openBiotaPhyCallback: function() {
-		console.log("Opening a BiotaPhy app")
-		this.launchAppWithValues("Lifemapper-SAGE2-App", { view : "biotaphy" })
 	},
 
 	suggestNodesForSites: function(data) {

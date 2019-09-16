@@ -28,7 +28,6 @@ import Html
 import Html.Attributes as A
 import Html.Events
 import LinearTreeView exposing (computeColor, drawTree, gradientDefinitions)
-import List.Extra as List
 import McpaModel exposing (..)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
@@ -37,11 +36,6 @@ import Svg.Attributes exposing (..)
 viewTree : Model data -> Bool -> (Int -> Maybe Float) -> Html.Html Msg
 viewTree model redBlue selectData =
     let
-        variables =
-            model.variables
-                |> List.partition (\v -> v == "Env - Adjusted R-squared" || v == "BG - Adjusted R-squared")
-                |> (\( adjustedRSquareds, rest ) -> adjustedRSquareds ++ rest)
-
         computeColor_ opacity cladeId =
             selectData cladeId
                 |> Maybe.map (computeColor opacity)
@@ -64,82 +58,6 @@ viewTree model redBlue selectData =
         gradDefs =
             gradientDefinitions grads
 
-        select v =
-            SelectVariable v
-            {--String.toInt string
-                >> Result.toMaybe
-                >> Maybe.andThen (\i -> List.getAt i variables)
-                >> Maybe.withDefault ""
-                >> SelectVariable--}
-
-        liHeight =
-            19
-
-        liBorder =
-            2
-
-        selectorHeight =
-            case model.selectorClosed of
-                True ->
-                    liHeight
-                False ->
-                    (liHeight + liBorder) * List.length variables - liBorder
-
-        variableSelector =
-            Html.div
-                [ A.style
-                    [ ( "position", "relative" )
-                    , ( "display", "flex" )
-                    , ( "justify-content", "flex-start" )
-                    ]
-                ]
-                [ Html.span [ A.style [ ( "margin", "0px 4px" ) ] ] [ Html.text "Predictor:" ]
-                , Html.div []
-                    [ Html.ul
-                        [ A.classList [ ("drop-down", True), ("closed", (model.selectorClosed == True)) ]
-                        , A.style [ ( "width", "300px" ), ( "height", toString selectorHeight ) ]
-                        ]
-                        (List.concat
-                            [ [ Html.li []
-                                    [ Html.a
-                                        [ A.href "#"
-                                        , A.class "nav-button"
-                                        , Html.Events.onClick ToggleSelector
-                                        ]
-                                        [ Html.text model.selectedVariable ]
-                                    ]
-                              ]
-                            , variables
-                                |> List.indexedMap
-                                    (\i v ->
-                                        Html.li []
-                                            [ Html.a
-                                                [ A.href "#"
-                                                , A.value (toString i)
-                                                , Html.Events.onClick (select v)
-                                                ]
-                                                [ Html.text v ]
-                                            ]
-                                    )
-                            ]
-                        )
-                    ]
-                ]
-
-        toggleBranchLengths =
-            Html.div []
-                [ Html.label []
-                    [ Html.input
-                        [ A.type_ "checkbox"
-                        , A.checked model.showBranchLengths
-                        , A.readonly True
-                        , Html.Events.onClick ToggleShowLengths
-                        ]
-                        []
-                    , Html.text "Show branch lengths"
-                    ]
-                ]
-
         ( color0, color1 ) =
             ( computeColor 1.0 0.0, computeColor 1.0 1.0 )
 
@@ -161,39 +79,16 @@ viewTree model redBlue selectData =
                 , Html.p [ A.style [ ( "margin", "3px 6px" ) ] ] [ Html.text "1.0" ]
                 ]
     in
-    Html.div
-        [ A.style [ ( "display", "flex" ), ( "flex-direction", "column" ) ] ]
-        [ {--Html.h3 [ A.style [ ( "text-align", "center" ) ] ]
-                [ Html.text "Phylogenetic Tree" ]
-            ,--}
-          Html.div
-            [ A.style
-                [ ( "display", "flex" )
-                , ( "justify-content", "space-between" )
-                , ( "flex-shrink", "0" )
-                , ( "margin", "2px 4px" )
+        Html.div
+            [ A.style [ ( "display", "flex" ), ( "flex-direction", "column" ) ] ]
+            [ legend
+            , Html.div [ A.style [ ( "overflow-y", "auto" ) ] ]
+                [ svg
+                    [ width "560" -- TODO: get rid of these magic numbers!
+                    , height (14 * treeHeight |> toString)
+                    , viewBox ("0 0 40 " ++ toString treeHeight)
+                    , A.style [ ( "background", "#000" ), ( "font-family", "sans-serif" ) ] -- TODO: let's get a better font :)
+                    ]
+                    (gradDefs :: treeSvg)
                 ]
             ]
-            [ variableSelector, toggleBranchLengths ]
-        , legend
-        , Html.div [ A.style [ ( "overflow-y", "auto" ) ] ]
-            [ svg
-                [ width "560"
-                , height (14 * treeHeight |> toString)
-                , viewBox ("0 0 40 " ++ toString treeHeight)
-                , A.style [ ( "background", "#000" ), ( "font-family", "sans-serif" ) ]
-
-                -- , Html.Events.onClick JumpUp
-                ]
-                -- (clickBox :: treeSvg)
-                (gradDefs :: treeSvg)
-            ]
-
-        {--, Html.p [ A.style [ ( "width", "560px" ) ] ]
-                [ Html.text <|
-                    "Node color indicates correlation between sister clades and "
-                        ++ "the selected predictor.  Selecting a node highlights aggregated "
-                        ++ "presence of species of one clade in blue and the other in red.  "
-                        ++ "Sites where species of both sides are present are purple."
-                ]--}
-        ]
