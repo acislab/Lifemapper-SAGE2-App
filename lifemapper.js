@@ -23,18 +23,18 @@ var lifemapper = sage2_webview_appCoreV01_extendWebview({
 		putAdditionalContextMenuEntriesBeforeDefaultEntries: true,
 		// The following will include the default Webview context menu entry if set to true.
 		enableUiContextMenuEntries: {
-			navigateBack:       false, // alt left-arrow
-			navigateForward:    false, // alt right-arrow
-			reload:             false, // alt r
-			autoRefresh:        false, // must be selected from UI context menu
-			consoleViewToggle:  false, // must be selected from UI context menu
-			zoomIn:             false, // alt up-arrow
-			zoomOut:            false, // alt down-arrow
-			urlTyping:          false, // must be typed from UI context menu
+			navigateBack: false, // alt left-arrow
+			navigateForward: false, // alt right-arrow
+			reload: false, // alt r
+			autoRefresh: false, // must be selected from UI context menu
+			consoleViewToggle: false, // must be selected from UI context menu
+			zoomIn: false, // alt up-arrow
+			zoomOut: false, // alt down-arrow
+			urlTyping: false, // must be typed from UI context menu
 			copyUrlToClipboard: false, // must be typed from UI context menu
 		},
 	},
-	init: function(data) {
+	init: function (data) {
 		// Will be called after initial SAGE2 init()
 		// this.element will refer to the webview tag
 		this.resizeEvents = "continuous"; // Recommended not to change. Options: never, continuous, onfinish
@@ -59,6 +59,11 @@ var lifemapper = sage2_webview_appCoreV01_extendWebview({
 					this.sendResize(700, 700);
 					this.changeURL(this.resrcPath + "/webapp/scatterView.html", false);
 					break;
+				case "projection":
+					console.log("Launching Lifemapper app as \"projection\"");
+					this.sendResize(700, 700);
+					this.changeURL(this.resrcPath + "/webapp/projectionView.html", false);
+					break;
 				default:
 					console.log("Launching Lifemapper app with no parameters");
 					this.sendResize(560, 128);
@@ -73,22 +78,22 @@ var lifemapper = sage2_webview_appCoreV01_extendWebview({
 			//this.changeURL(this.resrcPath + "/webpageOLD/index.html", false);
 		}
 	},
-	load: function(date) {
+	load: function (date) {
 		// OPTIONAL
 		// The state will be automatically passed to your webpage through the handler you gave to SAGE2_AppState
 		// Use this if you want to alter the state BEFORE it is passed to your webpage. Access with this.state
 	},
-	draw: function(date) {
+	draw: function (date) {
 		// OPTIONAL
 		// Your webpage will be in charge of its view
 		// Use this if you want to so something within the SAGE2 Display variables
 		// Be sure to set 'this.maxFPS' within init() if this is desired.
 		// FPS only works if instructions sets animation true
 	},
-	resize: function() {
+	resize: function () {
 		// OPTIONAL
 	},
-	getContextEntries: function() {
+	getContextEntries: function () {
 		// OPTIONAL
 		// This can be used to allow UI interaction to your webpage
 		// Entries are added after entries of enableUiContextMenuEntries 
@@ -101,7 +106,7 @@ var lifemapper = sage2_webview_appCoreV01_extendWebview({
 		// 	// Each of the parameter properties will be in that object
 		// 	// Some properties are reserved and may be automatically filled in.
 		// });
-		
+
 		// TODO: remove these (keeping for now as reference)
 		entries.push({
 			description: "Set Counter value",
@@ -131,6 +136,11 @@ var lifemapper = sage2_webview_appCoreV01_extendWebview({
 			callback: "openScatterCallback", // function defined below
 			parameters: {},
 		});
+		entries.push({
+			description: "Open a model projection",
+			callback: "openProjectionCallback", // function defined below
+			parameters: {},
+		});
 
 		return entries;
 	},
@@ -151,27 +161,32 @@ var lifemapper = sage2_webview_appCoreV01_extendWebview({
 	// ----------------------------------------------------------------------------------------------------
 	// Add optional functions
 
-	openTreeCallback: function() {
+	openTreeCallback: function () {
 		console.log("Opening phylogenetic tree app");
-		this.launchAppWithValues("Lifemapper-SAGE2-App", { view : "tree" });
+		this.launchAppWithValues("Lifemapper-SAGE2-App", { view: "tree" });
 	},
 
-	openMapCallback: function() {
+	openMapCallback: function () {
 		console.log("Opening occurrence map app");
-		this.launchAppWithValues("Lifemapper-SAGE2-App", { view : "occmap" });
+		this.launchAppWithValues("Lifemapper-SAGE2-App", { view: "occmap" });
 	},
 
-	openScatterCallback: function() {
+	openScatterCallback: function () {
 		console.log("Opening scatter plot app");
-		this.launchAppWithValues("Lifemapper-SAGE2-App", { view : "scatter" });
+		this.launchAppWithValues("Lifemapper-SAGE2-App", { view: "scatter" });
 	},
 
-	suggestNodesForSites: function(data) {
+	openProjectionCallback: function () {
+		console.log("Opening model projection app");
+		this.launchAppWithValues("Lifemapper-SAGE2-App", { view: "projection" });
+	},
+
+	suggestNodesForSites: function (data) {
 		console.log("Suggesting nodes for sites");
 		this.sendDataToParentApp("propagateNodesForSites", JSON.stringify(data));
 	},
 
-	suggestSitesForNode: function(data) {
+	suggestSitesForNode: function (data) {
 		console.log("Suggesting sites for node");
 		console.log("Received this piece a junkah:");
 		console.log(JSON.stringify(data))
@@ -179,49 +194,49 @@ var lifemapper = sage2_webview_appCoreV01_extendWebview({
 		this.sendDataToParentApp("propagateSitesForNode", JSON.stringify(data));
 	},
 
-	propagateNodesForSites: function(data) {
+	propagateNodesForSites: function (data) {
 		console.log("Propagating nodes for sites");
 		this.sendDataToChildrenApps("receiveNodesForSites", data);
 	},
 
-	propagateSitesForNode: function(data) {
+	propagateSitesForNode: function (data) {
 		console.log("Propagating sites for node");
 		this.sendDataToChildrenApps("receiveSitesForNode", data);
 	},
 
-	receiveNodesForSites: function(data) {
+	receiveNodesForSites: function (data) {
 		console.log("Receiving nodes for sites");
 		this.callFunctionInWebpage("receiveNodesForSites", data);
 	},
 
-	receiveSitesForNode: function(data) {
+	receiveSitesForNode: function (data) {
 		console.log("Receiving sites for node");
 		this.callFunctionInWebpage("receiveSitesForNode", data);
 	},
 
-	askParent: function(func, data) { // TODO: not in use? Remove?
+	askParent: function (func, data) { // TODO: not in use? Remove?
 		data._sender = this.id; // Provide an address for the parent to reply to
 		this.sendDataToParentApp(func, data);
 	},
 
-	getModel: function(data) {
+	getModel: function (data) {
 		if (data._sender)
 			applications[data._sender]
 	},
 
-	setCounterValueInPage: function(responseObject) { // Handles the UI context menu entry
+	setCounterValueInPage: function (responseObject) { // Handles the UI context menu entry
 		this.callFunctionInWebpage("setCounterValue", responseObject.clientInput);
 	},
 
-	giveContainerStateToWebpage: function() {
+	giveContainerStateToWebpage: function () {
 		this.sendStateToWebpage();
 	},
 
-	printPropertyLine1: function(value) {
+	printPropertyLine1: function (value) {
 		console.log(value.line1);
 	},
 
-	printPropertyLine2: function(value) {
+	printPropertyLine2: function (value) {
 		console.log(value.line2);
 	},
 

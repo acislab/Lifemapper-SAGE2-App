@@ -44,7 +44,7 @@ update msg model =
         OpenScatter ->
             (model, openScatter ())
         OpenProjection ->
-            (model, Cmd.none)
+            (model, openProjection ())
         McpaMsg _ ->
             (model, Cmd.none)
         {--StatsMsg _ ->
